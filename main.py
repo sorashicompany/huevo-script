@@ -16,7 +16,7 @@ MAX_CLICKS_PER_SESSION, MAX_CPS = 10000, 5
 SCAN_SCRIPT = r"""() => {
  const visible=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return r.width>0&&r.height>0&&s.visibility!=='hidden'&&s.display!=='none'};
  const label=e=>(e.innerText||e.getAttribute('aria-label')||e.getAttribute('title')||e.getAttribute('alt')||e.value||'').trim().replace(/\s+/g,' ').slice(0,100);
- return [...document.querySelectorAll('button,a[href],input,textarea,select,[role="button"],img#ck-cat')].filter(visible).slice(0,300).map((e,i)=>{
+ return [...document.querySelectorAll('img#ck-cat')].filter(visible).map((e,i)=>{
  const tag=e.tagName.toLowerCase();let selector=e.id?'#'+CSS.escape(e.id):e.getAttribute('data-testid')?'[data-testid="'+CSS.escape(e.getAttribute('data-testid'))+'"]':tag+':nth-of-type('+( [...document.querySelectorAll(tag)].indexOf(e)+1)+')';
  return {index:i,tag,type:e.getAttribute('type')||'',label:label(e)||'(без подписи)',selector,disabled:!!e.disabled};
  });
