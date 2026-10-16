@@ -9,7 +9,7 @@ pyinstaller --noconfirm --clean --onefile --windowed --name HuevoHelper main.py
 if errorlevel 1 goto :error
 echo.
 echo Build complete: dist\HuevoHelper.exe
-echo HuevoHelper uses Microsoft Edge installed on Windows. No browser bundle needed.
+echo HuevoHelper uses Google Chrome installed on Windows. No browser bundle needed.
 pause
 exit /b 0
 :error
