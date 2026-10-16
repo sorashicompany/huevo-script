@@ -23,6 +23,7 @@ def api(path, method="GET", token=None, body=None, query=""):
  url=SUPABASE_URL+path+query
  data=None if body is None else json.dumps(body).encode()
  headers={"apikey":SUPABASE_KEY,"Content-Type":"application/json"}
+ if "on_conflict=" in path: headers["Prefer"]="resolution=merge-duplicates,return=minimal"
  if token: headers["Authorization"]="Bearer "+token
  req=urllib.request.Request(url,data=data,headers=headers,method=method)
  try:
@@ -85,7 +86,7 @@ class HuevoHelper:
  def login_succeeded(self):
   self.stop_server();meta=self.user.get("user_metadata") or {};email=self.user.get("email","")
   profile={"user_id":self.user["id"],"email":email,"display_name":meta.get("full_name") or meta.get("name") or email,"avatar_url":meta.get("avatar_url") or meta.get("picture")}
-  try:api("/rest/v1/user_profiles?on_conflict=user_id","POST",self.token,profile,"&on_conflict=user_id")
+  try:api("/rest/v1/user_profiles?on_conflict=user_id","POST",self.token,profile)
   except Exception as e: print("Profile save:",e)
   try:self.lifetime=sum(int(r.get("click_count",0)) for r in api("/rest/v1/click_sessions",token=self.token,query="?select=click_count&limit=500"))
   except Exception:self.lifetime=0
@@ -183,7 +184,7 @@ class HuevoHelper:
   except Exception as e:self.log("Ошибка сохранения статистики: "+str(e))
  def refresh_stats(self):
   if not hasattr(self,"total"):return
-  self.total.set(f"{self.lifetime+self.session_clicks:,}");self.session.set(f"{self.session_clicks:,}");d=max(0,time.monotonic()-(self.started_at or time.monotonic()));self.elapsed.set(time.strftime("%H:%M:%S",time.gmtime(d)));self.rate.set(f"{self.session_clicks/d:.1f} клика/с" if d else "0.0 клика/с")
+  self.total.set(f"{(self.lifetime+self.session_clicks) if self.running else self.lifetime:,}");self.session.set(f"{self.session_clicks:,}");d=max(0,time.monotonic()-(self.started_at or time.monotonic()));self.elapsed.set(time.strftime("%H:%M:%S",time.gmtime(d)));self.rate.set(f"{self.session_clicks/d:.1f} клика/с" if d else "0.0 клика/с")
  def dispose(self):
   for obj,method in ((self.context,"close"),(self.browser,"close"),(self.playwright,"stop")):
    try:
