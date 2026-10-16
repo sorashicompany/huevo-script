@@ -1,0 +1,761 @@
+<body bgcolor="#EEEEEE" text="#000000" link="#3A3A3A" alink="#3A3A3A" vlink="#3A3A3A" class="theme-modern">
+        
+        
+        
+        
+        
+        
+
+        
+        <div id="ap-header-wrap" class="mh">
+            <div id="mh-bar">
+                <div class="mh-inner">
+                    <a href="/news" class="mh-logo" title="huEVO"><b>huEVO</b></a>
+                    <form action="/search" method="GET" class="mh-search" role="search" data-suggest="1">
+                        <span class="hue-ico hue-ico-search" aria-hidden="true"></span><input type="text" name="q" placeholder="Поиск" maxlength="100" aria-label="Поиск" autocomplete="off">
+                        <button type="button" class="mh-search-close" title="Закрыть поиск" aria-label="Закрыть поиск">×</button>
+                    <div class="hue-sugg" hidden="" role="listbox"></div></form>
+                    <a href="/search" id="mh-search-btn" class="mh-btn" title="Поиск" aria-label="Поиск"><span class="hue-ico hue-ico-search" aria-hidden="true"></span></a>
+                    <a href="/notifications" id="mh-bell" class="mh-btn" title="Уведомления" onclick="return hueNotifDrop(event);"><span class="hue-ico hue-ico-bell" aria-hidden="true"></span><span id="mh-bell-badge"></span></a>
+                    <a href="/audio" id="ap-panel-toggle" class="mh-btn" title="Музыка" onclick="return apToggleLink(event);"><span class="hue-ico hue-ico-music" aria-hidden="true"></span></a>
+                    <a href="#" id="mh-play" class="mh-play" title="Играть" aria-label="Играть / пауза"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"></path></svg></a><span id="mh-now" onclick="apToggleLink(event);" title="Открыть плеер"></span>
+                    <div id="topbar-user" class="mh-user"><!--HUE-USER-->
+                        
+                        <div class="mh-user-btn mh-user-one" role="button" tabindex="0" aria-haspopup="true" title="Моя страница и настройки" onclick="return hueUserMenu(event);" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); hueUserMenu(event); }">
+                            <span class="mh-user-name-btn" title="fallen"><span class="mh-user-name">fallen</span></span>
+                            
+                            <span class="mh-user-av-btn"><img src="/static/img/noavatar.svg" class="mh-user-av" alt=""><span class="mh-caret">▾</span></span>
+                        </div>
+                        <div id="mh-user-menu" class="mh-drop">
+                            <a href="/profile">Моя страница</a>
+                            <a href="/edit_profile">Редактировать</a>
+                            <a href="/settings">Настройки</a>
+                            
+                            <a href="/help">Помощь</a>
+                            <div class="mh-drop-sep"></div>
+                            <div class="hue-scheme-pick" role="group" aria-label="Тема"><span class="hue-scheme-cap">Тема</span><button type="button" data-pick="light" onclick="return hueSetScheme('light');" title="Светлая тема">Светлая</button><button type="button" data-pick="dark" onclick="return hueSetScheme('dark');" title="Тёмная тема">Тёмная</button><button type="button" data-pick="auto" onclick="return hueSetScheme('auto');" title="Как в системе">Авто</button></div>
+                            <div class="mh-drop-sep"></div>
+                            <a href="/logout">Выйти</a>
+                        </div>
+                        
+                    <!--/HUE-USER--></div>
+                </div>
+            </div>
+            <div id="mh-notif" class="mh-drop">
+                <div class="mh-notif-head"><b>Уведомления</b><a href="/notifications" data-close-drop="1">Все уведомления</a></div>
+                <div id="mh-notif-list"><div class="mh-notif-empty">Загрузка...</div></div>
+            </div>
+            
+        
+        <div id="ap-panel" class="apm" style="display: none;">
+            <div id="ap-controls" class="ap-in-panel apm-player">
+                <div class="apm-btns">
+                    <a href="#" class="apm-b apm-prev" onclick="AP.prev(); return false;" title="Предыдущая" aria-label="Предыдущая"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2.2v14H6zM19.5 5.3v13.4L9.4 12z"></path></svg></a>
+                    <a href="#" id="ap-toggle" class="apm-play" data-ap-icons="1" onclick="AP.toggle(); return false;" title="Играть" aria-label="Играть / пауза"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"></path></svg></a>
+                    <a href="#" class="apm-b apm-next" onclick="AP.next(); return false;" title="Следующая" aria-label="Следующая"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.8 5H18v14h-2.2zM4.5 5.3v13.4L14.6 12z"></path></svg></a>
+                </div>
+                <span class="apm-cover" id="ap-cover" onclick="APPanel.open('queue');" title="Очередь"></span>
+                <div class="apm-mid">
+                    <div class="apm-line">
+                        <span class="apm-name" id="ap-title" title="Ничего не выбрано" data-track-page="">Ничего не выбрано</span>
+                        <span class="apm-time" id="ap-time">0:00 / 0:00</span>
+                    </div>
+                    <input type="range" id="ap-seek" class="apm-range" min="0" max="1000" value="0" title="Перемотка" aria-label="Перемотка" style="--p: 0.00%;">
+                </div>
+                <div class="apm-tools"><a href="#" id="ap-add-track" role="button" class="apm-b apm-add" title="Добавить к себе" aria-label="Добавить к себе" style="display: none;"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path class="i-plus" d="M12 5v14M5 12h14"></path><path class="i-done" d="M5 12.5l4.5 4.5L19 7.5"></path></svg></a>
+                    <a href="#" id="ap-mute" class="apm-b apm-vol-ico" onclick="AP.toggleMute(); return false;" title="Выключить звук" aria-label="Звук"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="v-body" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path class="v-wave" d="M15 9.2a4 4 0 0 1 0 5.6M17.6 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path class="v-off" d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></a>
+                    <input type="range" id="ap-vol" class="apm-range apm-vol" min="0" max="100" value="80" title="Громкость" aria-label="Громкость" style="--p: 80.00%;">
+                    <a href="#" id="ap-shuffle" class="apm-b" data-ap-icons="1" onclick="AP.toggleShuffle(); return false;" title="Играть вперемешку" aria-label="Вперемешку"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h4v4M4 19 20 4M20 16v4h-4M14.5 14.5 20 20M4 5l5 5"></path></svg></a>
+                    <a href="#" id="ap-repeat" class="apm-b" data-ap-icons="1" onclick="AP.toggleRepeat(); return false;" title="Повтор выключен" aria-label="Повтор"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l3 3-3 3"></path><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H20"></path><path d="M7 21l-3-3 3-3"></path><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H4"></path></svg><i>1</i></a>
+                </div>
+                <audio id="ap-audio" preload="metadata"></audio>
+            </div>
+            <div class="apm-body">
+                <div class="apm-main">
+                    <div class="apm-search"><span class="hue-ico hue-ico-search" aria-hidden="true"></span><input type="text" id="ap-q" maxlength="80" autocomplete="off" placeholder="Поиск музыки" aria-label="Поиск музыки"><button type="button" id="ap-q-clear" title="Очистить" aria-label="Очистить">×</button><button type="button" id="ap-q-go" hidden="">Найти</button></div>
+                    <div class="apm-cap"><b id="ap-panel-caption">Моя музыка</b><span id="ap-panel-count"></span></div>
+                    <div id="ap-list-wrap"><div id="ap-list" class="apm-list"></div><div class="apm-more" style="display: none;"></div></div>
+                </div>
+                <div class="apm-side ap-sections-cell">
+                    <div id="ap-sections" class="apm-sections"><a href="#" class="apm-sec active" data-ap-section="my">Моя музыка</a><a href="#" class="apm-sec" data-ap-section="queue">Сейчас играет</a><a href="#" class="apm-sec" data-ap-section="uploaded">Загруженное</a><a href="#" class="apm-sec" data-ap-section="new">Новое</a><a href="#" class="apm-sec" data-ap-section="popular">Популярное</a></div>
+                    <div id="ap-pl-side" class="apm-pls"></div>
+                    <div class="apm-side-links"><a href="/audio" data-ap-nav="1">Загрузить</a><a href="/zvuchok" data-ap-nav="1">Звучок</a><a href="#" onclick="APPanel.close(); return false;">Свернуть</a></div>
+                </div>
+            </div>
+        </div>
+        
+        
+        </div>
+        
+
+        <table id="huevo-layout" width="100%" border="0" cellpadding="15">
+            <tbody><tr>
+                <td id="sidebar-cell" width="20%" valign="top">
+                    <div class="hue-sheet-head"><b>Меню</b><a href="#" onclick="hueMobileMenu(false); return false;" aria-label="Закрыть">×</a></div>
+                    <table id="sidebar-nav" border="0" cellpadding="5" width="100%">
+                        
+                        <tbody><tr><td><a href="/profile" data-nav="/profile"><span class="hue-ico hue-ico-home" aria-hidden="true"></span><span>Моя Страница</span></a></td></tr>
+                        <tr><td><a href="/news" data-nav="/news"><span class="hue-ico hue-ico-news" aria-hidden="true"></span><span>Новости</span></a></td></tr>
+                        <tr><td><a href="/messages" data-nav="/messages /chats"><span class="hue-ico hue-ico-msg" aria-hidden="true"></span><span>Сообщения</span> <span id="sidebar-msg-badge"></span></a></td></tr>
+                        <tr><td><a href="/friends" data-nav="/friends"><span class="hue-ico hue-ico-friends" aria-hidden="true"></span><span>Друзья</span> <span id="sidebar-friends-badge"></span></a></td></tr>
+                        <tr><td><a href="/notifications" data-nav="/notifications"><span class="hue-ico hue-ico-bell" aria-hidden="true"></span><span>Уведомления</span> <span id="sidebar-notif-badge"></span></a></td></tr>
+                        <tr><td><a href="/groups" data-nav="/groups /group"><span class="hue-ico hue-ico-groups" aria-hidden="true"></span><span>Сообщества</span></a></td></tr>
+                        <tr><td><a href="/zvuchok" data-nav="/zvuchok"><span class="hue-ico hue-ico-zvuk" aria-hidden="true"></span><span>Звучок</span></a></td></tr>
+                        <tr><td><a href="/video" data-nav="/video"><span class="hue-ico hue-ico-video" aria-hidden="true"></span><span>Видеозаписи</span></a></td></tr>
+                        <tr><td><a href="/bookmarks" data-nav="/bookmarks"><span class="hue-ico hue-ico-star" aria-hidden="true"></span><span>Закладки</span></a></td></tr>
+                        <tr><td><a href="/saved" data-nav="/saved"><span class="hue-ico hue-ico-saved" aria-hidden="true"></span><span>Сохранённые</span></a></td></tr>
+                        <tr><td><a href="/gifts" data-nav="/gifts /gift"><span class="hue-ico hue-ico-gift" aria-hidden="true"></span><span>Подарки</span></a></td></tr>
+                        <tr><td><a href="/market" data-nav="/market"><span class="hue-ico hue-ico-market" aria-hidden="true"></span><span>Маркет</span></a></td></tr>
+                        <tr><td><a href="/clicker" data-nav="/clicker" class="active"><span class="hue-ico hue-ico-coin" aria-hidden="true"></span><span>Копилка</span></a></td></tr>
+                        <tr><td><a href="/roulette" data-nav="/roulette"><span class="hue-ico hue-ico-roulette" aria-hidden="true"></span><span>Рулетка</span></a></td></tr>
+                        <tr><td><a href="/apps" data-nav="/apps"><span class="hue-ico hue-ico-apps" aria-hidden="true"></span><span>Приложения</span></a></td></tr>
+                        
+                        <tr><td><a href="/search" data-nav="/search"><span class="hue-ico hue-ico-search" aria-hidden="true"></span><span>Поиск</span></a></td></tr>
+                        <tr><td><a href="/help" data-nav="/help"><span class="hue-ico hue-ico-help" aria-hidden="true"></span><span>Помощь</span> <span id="sidebar-help-badge"></span></a></td></tr>
+                        <tr><td><hr></td></tr>
+                        <tr><td><a href="/settings" data-nav="/settings"><span class="hue-ico hue-ico-settings" aria-hidden="true"></span><span>Настройки</span></a></td></tr>
+                        <tr class="hue-scheme-nav"><td><div class="hue-scheme-pick" role="group" aria-label="Тема"><span class="hue-scheme-cap">Тема</span><button type="button" data-pick="light" onclick="return hueSetScheme('light');" title="Светлая тема">Светлая</button><button type="button" data-pick="dark" onclick="return hueSetScheme('dark');" title="Тёмная тема">Тёмная</button><button type="button" data-pick="auto" onclick="return hueSetScheme('auto');" title="Как в системе">Авто</button></div></td></tr>
+                        
+                        <tr><td><hr></td></tr>
+                        
+                        <tr><td><a href="/logout"><span class="hue-ico hue-ico-logout" aria-hidden="true"></span><span>Выйти</span></a></td></tr>
+                        
+                    </tbody></table>
+                    <div id="sidebar-foot" class="hue-side-foot">
+                        <span class="hue-side-lang">Язык: Русский</span>
+                        <a href="/legal/rules" data-nav="/legal/rules">Правила</a>
+                        <a href="/legal/statuses" data-nav="/legal/statuses">Статусы</a>
+                        <a href="/legal/terms" data-nav="/legal/terms">Соглашение</a>
+                        <a href="/legal/privacy" data-nav="/legal/privacy">Конфиденциальность</a>
+                        <a href="/help" data-nav="/help">Помощь</a>
+                        <span class="hue-side-copy">huEVO © 2026</span>
+                    </div>
+                    
+                    
+                </td>
+
+                <td width="80%" valign="top" id="main-content"><!--HUE-MAIN-->
+                    
+                    
+                    <table id="hue-cooldown-note" width="100%" border="1" cellpadding="10" bgcolor="#FFF4F4" style="display: none; border-collapse: collapse; border-color: #E0B4B4; margin-bottom: 12px;">
+                        <tbody><tr>
+                            <td>
+                                <font color="#A94442"><b>Слишком часто.</b>
+                                Публиковать записи можно раз в 30 секунд.
+                                Подождите еще <b><span id="hue-cooldown-left">0</span></b> сек.
+                                и отправьте запись заново.</font>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <script>
+                        window.huePostCooldownSeconds = 30;
+                        window.huePostReadyAt = Date.now() + (0 * 1000);
+                        
+                    </script>
+                    <script>
+                        if (!window.__huePoll3) {
+                            window.__huePoll3 = true;
+                            var hpBox = function(form) { return form ? form.querySelector('[data-hp-create]') : null; };
+                            var hpCount = function(box) {
+                                var n = 0;
+                                box.querySelectorAll('input[name="poll_option"]').forEach(function(el) { if (el.value.trim()) n++; });
+                                return n;
+                            };
+                            window.huePollFilled = function(form) {
+                                var box = hpBox(form);
+                                if (!box) return false;
+                                var q = box.querySelector('input[name="poll_question"]');
+                                return !!(q && q.value.trim()) && hpCount(box) >= 2;
+                            };
+                            window.huePollReset = function(form) {
+                                var box = hpBox(form);
+                                if (!box) return;
+                                box.querySelectorAll('input[type="text"]').forEach(function(el) { el.value = ''; });
+                                box.querySelectorAll('input[type="checkbox"]').forEach(function(el) { el.checked = false; });
+                                box.open = false;
+                            };
+                            // крестик в форме опроса: стереть поля и свернуть (передумал делать опрос)
+                            document.addEventListener('click', function(e) {
+                                var x = e.target && e.target.closest ? e.target.closest('[data-hp-cancel]') : null;
+                                if (!x) return;
+                                e.preventDefault();
+                                var box = x.closest('[data-hp-create]');
+                                if (!box) return;
+                                box.querySelectorAll('input[type="text"]').forEach(function(el) { el.value = ''; });
+                                box.querySelectorAll('input[type="checkbox"]').forEach(function(el) { el.checked = false; });
+                                box.open = false;
+                                var form = box.closest('form');
+                                if (form) form.dispatchEvent(new Event('input', { bubbles: true }));
+                            }, true);
+                            document.addEventListener('click', function(e) {
+                                var add = e.target && e.target.closest ? e.target.closest('[data-hp-add]') : null;
+                                if (!add) return;
+                                e.preventDefault();
+                                var list = add.parentNode.querySelector('[data-hp-options]');
+                                var count = list.querySelectorAll('input').length;
+                                if (count < 10) {
+                                    var input = document.createElement('input');
+                                    input.type = 'text'; input.name = 'poll_option'; input.maxLength = 100;
+                                    input.placeholder = 'Вариант ' + (count + 1);
+                                    input.style.width = '100%'; input.style.marginBottom = '3px';
+                                    list.appendChild(input);
+                                    input.focus();
+                                }
+                                if (count + 1 >= 10) add.style.display = 'none';
+                            }, true);
+                            document.addEventListener('submit', function(e) {
+                                var form = e.target, box = hpBox(form);
+                                if (!box) return;
+                                var q = box.querySelector('input[name="poll_question"]');
+                                var started = (q && q.value.trim()) || hpCount(box) > 0;
+                                if (!started || window.huePollFilled(form)) return;
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                box.open = true;
+                                alert('Опрос: укажите тему и хотя бы два варианта ответа. Или сотрите поля опроса.');
+                            }, true);
+                            document.addEventListener('click', function(e) {
+                                var btn = e.target && e.target.closest ? e.target.closest('form[data-hp-vote] button[name="option"]') : null;
+                                if (btn) btn.form.__hpClicked = btn;
+                            }, true);
+                            document.addEventListener('submit', function(e) {
+                                var form = e.target;
+                                if (!form || !form.hasAttribute || !form.hasAttribute('data-hp-vote')) return;
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                var data = new FormData(form);
+                                var submitter = e.submitter || form.__hpClicked;
+                                if (submitter && submitter.name) data.append(submitter.name, submitter.value);
+                                form.__hpClicked = null;
+                                if (form.action.indexOf('/vote') !== -1 && !data.get('option')) return;
+                                var pollId = form.getAttribute('data-hp-vote');
+                                if (window.hueProgress) window.hueProgress.start();
+                                fetch(form.action, {
+                                    method: 'POST', body: data, credentials: 'same-origin',
+                                    headers: { 'X-Huevo-Poll': '1' }
+                                }).then(function(r) {
+                                    if (window.hueProgress) window.hueProgress.done();
+                                    return r.json();
+                                }).then(function(d) {
+                                    if (!d || !d.html) return;
+                                    document.querySelectorAll('[data-poll="' + pollId + '"]').forEach(function(el) {
+                                        el.outerHTML = d.html;
+                                    });
+                                }).catch(function() { if (window.hueProgress) window.hueProgress.done(); window.location.reload(); });
+                            }, true);
+                        }
+                    </script>
+                    
+                    <table id="site-announcement" data-at="2026-10-12 00:53:50" width="100%" border="1" cellpadding="8" cellspacing="0" bgcolor="#FFF8E1" style="border-collapse: collapse; border-color: #E6D9A0; margin-bottom: 10px;">
+                        <tbody><tr>
+                            <td><font size="2"><b>Объявление:</b> <span style="white-space: pre-wrap;">не еби мозги, подписывайся: <a href="https://t.me/huEVOsocial" class="hue-link" target="_blank" rel="nofollow noopener noreferrer ugc">https://t.me/huEVOsocial</a></span></font></td>
+                            <td width="20" align="right" valign="top">
+                                <a href="#" title="Скрыть" style="text-decoration: none; color: #999;" onclick="try { localStorage.setItem('hueAnnHidden', this.closest('table').getAttribute('data-at')); } catch (e) {} this.closest('table').style.display='none'; return false;">×</a>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <script>
+                        try {
+                            var ann = document.getElementById('site-announcement');
+                            if (ann && localStorage.getItem('hueAnnHidden') === ann.getAttribute('data-at')) ann.style.display = 'none';
+                        } catch (e) {}
+                    </script>
+                    
+                    
+                    
+<div class="vk-page mg-clicker">
+    <div class="vk-main">
+        <div class="vk-card">
+            
+            <div class="mg-ck-body">
+                <div id="ck-zone" class="mg-ck-zone">
+                    <img id="ck-cat" src="/static/img/clicker_cat.png" alt="Кот-копилка" draggable="false" class="mg-ck-cat" style="">
+                </div>
+                <div class="mg-ck-hint">Каждые <b>10</b> кликов — <b>1 монэтка</b>.</div>
+                <div class="mg-ck-track"><div id="ck-bar" class="mg-ck-bar" style="width: 30%;"></div></div>
+                <div class="vk-muted mg-ck-left"><span id="ck-pending">3</span> / 10 до следующей монэтки</div>
+                <div id="ck-capped" class="mg-ck-capped" style="display: none;">На сегодня копилка полна — приходите завтра!</div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="vk-right mg-ck-side">
+        <div class="vk-card">
+            <div class="mg-rows mg-ck-stats">
+                <div class="mg-r"><span>Баланс</span><b id="ck-balance">2 монэтки</b></div>
+                <div class="mg-r"><span>Сегодня</span><span><span id="ck-day">2</span> из 90000</span></div>
+                <div class="mg-r"><span>Всего кликов</span><span id="ck-clicks">23</span></div>
+                <div class="mg-r"><span>Заработано</span><span id="ck-total">2</span></div>
+            </div>
+            <div class="mg-ck-spend"><a href="/gifts" class="vk-btn vk-btn-primary vk-btn-wide">Потратить на подарки</a></div>
+            <div class="mg-ck-spend"><a href="/referrals" class="vk-btn vk-btn-wide">Пригласить друзей</a></div>
+        </div>
+        
+        <div class="vk-card">
+            <div class="vk-card-head">Лучшие копильщики</div>
+            <div class="mg-ck-top">
+                
+                <div class="mg-r"><span><span class="vk-muted">1.</span> <a href="/nordsalad">Kyrlikas</a></span><span class="vk-muted">648015</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">2.</span> <a href="/rykoshiee">rykoshiee</a></span><span class="vk-muted">638847</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">3.</span> <a href="/akirayamaoka">пушистый</a></span><span class="vk-muted">561540</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">4.</span> <a href="/steampianist">steampianist</a></span><span class="vk-muted">547639</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">5.</span> <a href="/diemadeway">die</a></span><span class="vk-muted">547579</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">6.</span> <a href="/astolfo">cutesykitty</a></span><span class="vk-muted">519087</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">7.</span> <a href="/katyan">катян #кошка &gt;-&lt;</a></span><span class="vk-muted">511517</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">8.</span> <a href="/xin">xin</a></span><span class="vk-muted">479629</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">9.</span> <a href="/cnpoc">ХожуПодБогом</a></span><span class="vk-muted">448256</span></div>
+                
+                <div class="mg-r"><span><span class="vk-muted">10.</span> <a href="/lup">дима слепота</a></span><span class="vk-muted">431587</span></div>
+                
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+(function() {
+    if (false) return;
+    var zone = document.getElementById('ck-zone');
+    var cat = document.getElementById('ck-cat');
+    var perCoin = 10;
+    var pending = 0;
+    var capped = false;
+    var FULL_TEXT = 'На сегодня копилка полна — приходите завтра!';
+    // Текст надписи: у узкой верстки текст прямо в #ck-capped, у широкой - во вложенном #ck-capped-text
+    function capText(t) { var el = $('ck-capped-text') || $('ck-capped'); if (el) el.textContent = t; }
+    var unsent = 0, sending = false, nextAt = 0, lastOk = 0;
+    // как MIN_GAP_SECONDS и MAX_BATCH в routes/clicker.py
+    var MIN_GAP = 8000, MAX_BATCH = 400;
+    var $ = function(id) { return document.getElementById(id); };
+    // Порцию раньше MIN_GAP после принятой сервер отверг бы как slow: при уходе со страницы она ждет в localStorage
+    // и уходит с отправкой следующей страницы. Время принятой отправки там же - его видят другие вкладки и страницы.
+    // Ключи - с id пользователя: другой аккаунт в этом браузере чужие клики не заберет
+    var stashKey = 'hueClickerUnsent8320', sentKey = 'hueClickerSent8320';
+    function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (err) {} return null; }
+    function stashed() { return Math.max(0, Math.min(MAX_BATCH, +store(stashKey) || 0)); }
+
+    function paint() {
+        $('ck-pending').textContent = Math.min(pending, perCoin);
+        $('ck-bar').style.width = Math.min(100, Math.floor(pending * 100 / perCoin)) + '%';
+        $('ck-capped').style.display = capped ? 'block' : 'none';
+    }
+    function floatText(x, y, text) {
+        var s = document.createElement('span');
+        s.textContent = text;
+        s.style.cssText = 'position:absolute; left:' + x + 'px; top:' + y + 'px; pointer-events:none; font: bold 15px Arial;' +
+                          'color:#B01E1E; transition: transform 0.6s ease-out, opacity 0.6s ease-out; text-shadow: 0 1px 0 #FFFFFF;';
+        zone.appendChild(s);
+        requestAnimationFrame(function() { s.style.transform = 'translateY(-40px)'; s.style.opacity = '0'; });
+        setTimeout(function() { s.remove(); }, 650);
+    }
+    function send() {
+        if (sending || !unsent || Date.now() < nextAt) return;
+        sending = true;
+        var n = unsent; unsent = 0;
+        fetch('/api/clicker', { method: 'POST', credentials: 'same-origin',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'clicks=' + n })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                sending = false;
+                if (d && d.error === 'slow') { unsent += n; nextAt = Date.now() + (d.retry || 5) * 1000; return; }
+                lastOk = Date.now();
+                store(sentKey, lastOk);
+                if (d && d.error === 'newbie') { capped = true; capText(d.message); paint(); return; }
+                if (d && d.error === 'full') { capped = true; pending = 0; capText(FULL_TEXT); paint(); return; }
+                if (!d || !d.ok) return;
+                pending = d.pending + unsent;
+                capped = d.capped;
+                $('ck-balance').textContent = d.balance_text;
+                $('ck-day').textContent = d.day_coins;
+                $('ck-clicks').textContent = d.clicks;
+                $('ck-total').textContent = d.total_coins;
+                if (d.earned) {
+                    if (window.hueToast) window.hueToast('+' + d.earned + ' монэтк' + (d.earned === 1 ? 'а' : 'и') + ' в копилку!');
+                }
+                paint();
+            })
+            .catch(function() { sending = false; unsent += n; });
+    }
+    function hit(e) {
+        e.preventDefault();
+        if (capped) { paint(); return; }
+        unsent++;
+        pending++;
+        cat.style.transform = 'scale(0.93) rotate(' + (Math.random() * 6 - 3) + 'deg)';
+        setTimeout(function() { cat.style.transform = ''; }, 70);
+        var r = zone.getBoundingClientRect();
+        var p = e.touches ? e.touches[0] : e;
+        floatText((p.clientX - r.left) - 8, (p.clientY - r.top) - 20, '+1');
+        if (pending >= perCoin) { pending -= perCoin; floatText(r.width / 2 - 30, 10, '+1 монэтка'); }
+        paint();
+        if (unsent >= MAX_BATCH) send();
+    }
+    function takeStashed(restored) {
+        var saved = stashed();
+        if (!saved) return;
+        try { localStorage.removeItem(stashKey); } catch (err) {}
+        unsent += saved;
+        // в копилке с сервера их нет; вернувшаяся из bfcache страница свои уже показывала - поправит ответ сервера
+        if (!restored) { pending = (pending + saved) % perCoin; paint(); }
+    }
+    takeStashed(false);
+    zone.addEventListener('pointerdown', hit);
+    zone.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    setInterval(send, 10000);
+    window.addEventListener('pagehide', function() {
+        if (!unsent) return;
+        var now = Date.now();
+        // последняя отправка, которую сервер засчитал (или засчитает: запрос еще в пути) - здесь или в другой вкладке
+        var last = Math.max(sending ? now : 0, lastOk, nextAt - MIN_GAP, +store(sentKey) || 0);
+        if (now - last < MIN_GAP || !navigator.sendBeacon) {
+            // другая вкладка могла отложить свои: складываем, больше MAX_BATCH за раз сервер не засчитает
+            store(stashKey, Math.min(MAX_BATCH, stashed() + unsent));
+        } else {
+            var fd = new FormData(); fd.append('clicks', unsent);
+            navigator.sendBeacon('/api/clicker', fd);
+            store(sentKey, now);
+        }
+        unsent = 0;
+    });
+    // страница вернулась из bfcache: отложенное при уходе (и другими вкладками) - снова в очередь
+    window.addEventListener('pageshow', function(e) { if (e.persisted) takeStashed(true); });
+})();
+</script>
+
+                    
+                <!--/HUE-MAIN--></td>
+            </tr>
+        </tbody></table>
+
+        <nav id="hue-tabbar" aria-label="Разделы">
+            <a href="/news" data-nav="/news"><span class="hue-ico hue-ico-news" aria-hidden="true"></span><span>Новости</span></a>
+            
+            <a href="/friends" data-nav="/friends"><span class="hue-ico hue-ico-friends" aria-hidden="true"></span><span>Друзья</span><b class="tab-badge" id="tab-friends-badge" style="display: none;"></b></a>
+            <a href="/messages" data-nav="/messages /chats"><span class="hue-ico hue-ico-msg" aria-hidden="true"></span><span>Сообщения</span><b class="tab-badge" id="tab-msg-badge" style="display: none;"></b></a>
+            <a href="/zvuchok" data-nav="/zvuchok"><span class="hue-ico hue-ico-zvuk" aria-hidden="true"></span><span>Звучок</span></a>
+            <a href="#" id="tab-menu" onclick="hueMobileMenu(); return false;"><span class="hue-ico hue-ico-menu" aria-hidden="true"></span><span>Меню</span><b class="tab-badge" id="tab-menu-badge" style="display: none;"></b></a>
+            
+        </nav>
+
+        <div id="custom-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1400; align-items:center; justify-content:center;">
+            <div style="background:#fff; padding:25px; border-radius:8px; min-width:320px; text-align:center; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <p id="custom-modal-text" style="margin-top:0; margin-bottom:20px; font-size:16px; color:#333;"></p>
+                <label id="custom-modal-skip" class="hue-modal-skip" style="display:none;"><input type="checkbox" id="custom-modal-skip-box"><span>Больше не спрашивать</span></label>
+                <div>
+                    <button id="custom-modal-yes" style="margin-right:10px; padding:8px 20px; background:#E6E6E6; border:1px solid #D6D6D6; color:#3A3A3A; border-radius:4px; font-weight:bold; cursor:pointer;">Да</button>
+                    <button onclick="document.getElementById('custom-modal').style.display='none'" style="padding:8px 20px; background:#F0F0F0; border:1px solid #D6D6D6; color:#555; border-radius:4px; cursor:pointer;">Нет</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="audio-picker" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.5); z-index:1200; align-items:flex-start; justify-content:center; overflow-y:auto;">
+            <table border="1" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" width="640" style="margin:auto; border-collapse:collapse; border-color:#d0d0d0;">
+                <tbody><tr bgcolor="#F0F0F0">
+                    <td style="padding:8px 12px; border-bottom:1px solid #D6D6D6;"><b>Прикрепить аудиозаписи</b> <font size="1" color="gray" id="apk-count"></font></td>
+                    <td align="right" style="padding:8px 12px; border-bottom:1px solid #D6D6D6;">
+                        <font size="2"><a href="/audio" data-ap-nav="1">Загрузить</a></font>
+                    </td>
+                </tr>
+                <tr id="apk-tabs" hidden="">
+                    <td colspan="2" class="hue-apk-tabs-cell"><div class="hue-apk-tabs" role="tablist"><a href="#" role="tab" data-apk-tab="tracks" class="on">Аудиозаписи</a><a href="#" role="tab" data-apk-tab="pl">Альбомы и плейлисты</a></div></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:10px 12px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" id="apk-search">
+                            <tbody><tr>
+                                <td><input type="text" id="apk-q" maxlength="80" autocomplete="off" placeholder="Поиск" style="width:100%;"></td>
+                                <td width="1%" nowrap="" style="padding-left:6px;">
+                                    <input type="button" id="apk-go" value="Найти">
+                                </td>
+                                <td width="1%" nowrap="" style="padding-left:6px;">
+                                    <select id="apk-sort">
+                                        <option value="title">по композициям</option>
+                                        <option value="artist">по исполнителям</option>
+                                        <option value="added">по дате добавления</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                        <div style="margin-top:8px; max-height:320px; min-height:120px; overflow-y:auto;">
+                            <table id="apk-list" width="100%" border="0" cellpadding="4" cellspacing="0"></table>
+                        </div>
+                    </td>
+                </tr>
+                <tr bgcolor="#F0F0F0">
+                    <td colspan="2" align="right" style="padding:8px 12px; border-top:1px solid #D6D6D6;">
+                        <input type="button" id="apk-close" value="Готово">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div id="video-picker" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.5); z-index:1200; align-items:flex-start; justify-content:center; overflow-y:auto;">
+            <table border="1" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" width="640" style="margin:auto; border-collapse:collapse; border-color:#d0d0d0;">
+                <tbody><tr bgcolor="#F0F0F0">
+                    <td style="padding:8px 12px; border-bottom:1px solid #D6D6D6;"><b>Выбрать видеозапись</b></td>
+                    <td align="right" style="padding:8px 12px; border-bottom:1px solid #D6D6D6;">
+                        <font size="2"><a href="/video" data-vp-nav="1">Загрузить</a></font>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:10px 12px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody><tr>
+                                <td><input type="text" id="vpk-q" maxlength="80" autocomplete="off" placeholder="Поиск по названию" style="width:100%;"></td>
+                                <td width="1%" nowrap="" style="padding-left:6px;"><input type="button" id="vpk-go" value="Найти"></td>
+                            </tr>
+                        </tbody></table>
+                        <div style="margin-top:8px; max-height:360px; min-height:120px; overflow-y:auto;">
+                            <table id="vpk-list" width="100%" border="0" cellpadding="4" cellspacing="0"></table>
+                        </div>
+                    </td>
+                </tr>
+                <tr bgcolor="#F0F0F0">
+                    <td colspan="2" align="right" style="padding:8px 12px; border-top:1px solid #D6D6D6;">
+                        <input type="button" id="vpk-close" value="Закрыть">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div id="graffiti-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.5); z-index:1260; align-items:flex-start; justify-content:center; overflow-y:auto;">
+            <table border="1" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" width="626" style="margin:auto; max-width:96%; border-collapse:collapse; border-color:#d0d0d0;">
+                <tbody><tr bgcolor="#3A3A3A">
+                    <td style="padding:7px 12px;"><font color="#FFFFFF" size="2"><b>Граффити</b></font>
+                        <font color="#BDBDBD" size="1">&nbsp;рисуйте мышью или пальцем</font></td>
+                    <td align="right" width="30" style="padding:7px 12px;">
+                        <a href="#" id="gf-x" style="color:#FFFFFF; text-decoration:none;" title="Закрыть">×</a></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:10px 12px;">
+                        <canvas id="gf-canvas" width="586" height="293" style="display:block; width:100%; max-width:586px; height:auto; margin:0 auto;
+                                       border:1px solid #CCCCCC; background:#FFFFFF; touch-action:none; cursor:crosshair;"></canvas>
+                        <div id="gf-colors" style="margin-top:8px; line-height:26px;"><span data-gf-color="#000000" title="#000000" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(0, 0, 0); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline: rgb(58, 58, 58) solid 2px; outline-offset: 1px;"></span><span data-gf-color="#3A3A3A" title="#3A3A3A" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(58, 58, 58); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#8A8A8A" title="#8A8A8A" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(138, 138, 138); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#FFFFFF" title="#FFFFFF" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(255, 255, 255); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#B01E1E" title="#B01E1E" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(176, 30, 30); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#E53935" title="#E53935" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(229, 57, 53); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#F57C00" title="#F57C00" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(245, 124, 0); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#FBC02D" title="#FBC02D" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(251, 192, 45); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#388E3C" title="#388E3C" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(56, 142, 60); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#00897B" title="#00897B" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(0, 137, 123); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#1E88E5" title="#1E88E5" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(30, 136, 229); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#3949AB" title="#3949AB" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(57, 73, 171); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#8E24AA" title="#8E24AA" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(142, 36, 170); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#6D4C41" title="#6D4C41" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(109, 76, 65); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span><span data-gf-color="#F48FB1" title="#F48FB1" style="display: inline-block; width: 20px; height: 20px; margin: 0px 3px 0px 0px; vertical-align: middle; cursor: pointer; background: rgb(244, 143, 177); border: 1px solid rgb(153, 153, 153); box-sizing: border-box; outline-offset: 1px;"></span></div>
+                        <div style="margin-top:4px;">
+                            <font size="1" color="#8A8A8A">Толщина</font>
+                            <input type="range" id="gf-size" min="1" max="40" value="6" style="width:110px; vertical-align:middle;">
+                            &nbsp;<font size="1" color="#8A8A8A">Прозрачность</font>
+                            <input type="range" id="gf-alpha" min="10" max="100" value="100" style="width:90px; vertical-align:middle;">
+                            &nbsp;<font size="1" color="#8A8A8A">Свой цвет</font>
+                            <input type="color" id="gf-custom" value="#3A3A3A" style="width:34px; height:22px; padding:0; vertical-align:middle;">
+                        </div>
+                    </td>
+                </tr>
+                <tr bgcolor="#F0F0F0">
+                    <td colspan="2" align="right" style="padding:8px 12px; border-top:1px solid #D6D6D6;">
+                        <input type="button" id="gf-undo" value="Отменить" title="Отменить последнюю линию (Ctrl+Z). Вернуть - Ctrl+Y">
+                        <input type="button" id="gf-clear" value="Очистить">
+                        <input type="button" id="gf-attach" value="Прикрепить" style="font-weight:bold;">
+                        <input type="button" id="gf-close" value="Закрыть">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div id="poll-voters-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.5); z-index:1250; align-items:flex-start; justify-content:center; overflow-y:auto;">
+            <table border="1" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" width="520" style="margin:auto; max-width:96%; border-collapse:collapse; border-color:#d0d0d0;">
+                <tbody><tr bgcolor="#3A3A3A">
+                    <td style="padding:7px 12px;"><font color="#FFFFFF" size="2"><b>Проголосовавшие</b></font>
+                        <font color="#BDBDBD" size="1"><span id="pvm-question"></span></font></td>
+                    <td align="right" width="30" style="padding:7px 12px;">
+                        <a href="#" id="pvm-x" style="color:#FFFFFF; text-decoration:none;" title="Закрыть">×</a></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:0; background:#F7F7F7; border-bottom:1px solid #DDDDDD;">
+                        <div id="pvm-tabs" style="padding:0 6px;"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:8px 12px;">
+                        <div id="pvm-list" style="max-height:360px; min-height:80px; overflow-y:auto;"></div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div id="emoji-panel" style="display:none;">
+            <div id="emoji-grid"></div>
+            <div class="emoji-foot"><a href="#" id="emoji-close">Закрыть</a></div>
+        </div>
+
+        
+        
+        
+        <div id="call-modal" class="cw-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.6); z-index:2200; align-items:center; justify-content:center;">
+            <div id="call-window" class="cw" data-look="modern" role="dialog" aria-label="Звонок" style="--cw-k: 1;">
+                <div id="call-bg" class="cw-bg" aria-hidden="true"></div>
+                <div id="call-head" class="cw-head" title="Окно можно перетащить" style="touch-action: none;">
+                    <img id="call-mini-av" class="cw-mini-av" src="/static/img/noavatar.svg" alt="" decoding="async">
+                    <span class="cw-head-text">
+                        <span id="call-title" class="cw-title">Звонок</span>
+                        <span id="call-mini-name" class="cw-mini-name"></span>
+                        <span id="call-mini-timer" class="cw-mini-timer"></span>
+                    </span>
+                    <button type="button" id="call-mini-hangup" class="cw-mini-hang" title="Завершить звонок" aria-label="Завершить звонок"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></button>
+                    <button type="button" class="cw-hbtn" data-cw-zoom="-0.15" title="Уменьшить окно" aria-label="Уменьшить окно"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"></path></svg></button><button type="button" class="cw-hbtn" data-cw-zoom="0.15" title="Увеличить окно" aria-label="Увеличить окно"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"></path></svg></button><button type="button" class="cw-hbtn cw-maxbtn" title="На весь экран" aria-label="На весь экран"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+                    <a href="#" id="call-collapse" class="cw-collapse" title="Свернуть или развернуть окно звонка">Свернуть</a>
+                </div>
+                <div id="call-body" class="cw-body">
+                    <div class="cw-stage">
+                        <div class="cw-peer">
+                            <div class="cw-av-wrap"><img id="call-peer-av" class="cw-av" src="/static/img/noavatar.svg" alt="" decoding="async"></div>
+                            <div id="call-peer-name" class="cw-name"></div>
+                            <div id="call-status" class="cw-status">Соединение...</div>
+                            <div id="call-timer" class="cw-timer"></div>
+                            <div id="call-peer-state" class="cw-peer-state"></div>
+                        </div>
+                        <div id="call-video-wrap" class="cw-video" style="display:none;">
+                            <video id="call-remote-video" autoplay="" playsinline="" muted=""></video>
+                            <video id="call-local-video" autoplay="" playsinline="" muted="" title="Ваше видео. Окошко можно передвинуть"></video>
+                            <button type="button" id="call-full" class="cw-full" title="На весь экран" aria-label="На весь экран"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+                        </div>
+                    </div>
+                    <audio id="call-remote-audio" autoplay=""></audio>
+                    <div id="call-hint" class="cw-hint"></div>
+                    <div id="call-buttons" class="cw-btns">
+                        <button type="button" id="call-mic" class="cw-btn"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Микрофон</span></button>
+                        <button type="button" id="call-cam" class="cw-btn"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6.5" width="12.5" height="11" rx="2.5"></rect><path d="M15.5 10.5l5-3v9l-5-3z"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Камера</span></button>
+                        <button type="button" id="call-screen" class="cw-btn" style="display:none;"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12.5" rx="2"></rect><path d="M8.5 20.5h7M12 16.5v4M12 13V7.8M9.6 10.2L12 7.8l2.4 2.4"></path></svg></span><span class="cw-cap">Экран</span></button>
+                        <button type="button" id="call-speaker" class="cw-btn" style="display:none;"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"></path><path class="cw-wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Звук</span></button>
+                        <button type="button" id="call-hangup" class="cw-btn cw-red"><span class="cw-ic cw-ic-hang"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></span><span class="cw-cap">Завершить</span></button>
+                        <button type="button" id="call-reject" class="cw-btn cw-big cw-red"><span class="cw-ic cw-ic-hang"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></span><span class="cw-cap">Отклонить</span></button>
+                        <button type="button" id="call-accept" class="cw-btn cw-big cw-green"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></span><span class="cw-cap">Принять</span></button>
+                    </div>
+                </div>
+                <span class="cw-grip" title="Потяните, чтобы изменить размер окна" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div id="gcall-window" class="cw gcw" data-look="modern" style="display: none; position: fixed; right: 16px; bottom: 16px; z-index: 2300; --cw-k: 1;">
+            <div id="gcall-head" class="cw-head" title="Окно можно перетащить за эту полоску" style="user-select: none; touch-action: none;">
+                <span class="cw-head-text">
+                    <span id="gcall-title" class="cw-title">Звонок в беседе</span>
+                    <span id="gcall-status" class="cw-mini-timer">Подключение...</span>
+                </span>
+                <button type="button" id="gcall-mini-leave" class="cw-mini-hang" title="Выйти из звонка" aria-label="Выйти из звонка"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></button>
+                <button type="button" class="cw-hbtn" data-cw-zoom="-0.15" title="Уменьшить окно" aria-label="Уменьшить окно"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"></path></svg></button><button type="button" class="cw-hbtn" data-cw-zoom="0.15" title="Увеличить окно" aria-label="Увеличить окно"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"></path></svg></button><button type="button" class="cw-hbtn cw-maxbtn" title="На весь экран" aria-label="На весь экран"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+                <a href="#" id="gcall-collapse" class="cw-collapse" title="Свернуть или развернуть окно звонка">Свернуть</a>
+            </div>
+            <div id="gcall-body" class="cw-body">
+                <div id="gcall-tiles" class="gcw-tiles"></div>
+                <div id="gcall-hint" class="cw-hint"></div>
+                <div class="cw-btns">
+                    <button type="button" id="gcall-mic" class="cw-btn"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Микрофон</span></button>
+                    <button type="button" id="gcall-cam" class="cw-btn"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6.5" width="12.5" height="11" rx="2.5"></rect><path d="M15.5 10.5l5-3v9l-5-3z"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Камера</span></button>
+                    <button type="button" id="gcall-screen" class="cw-btn" style="display:none;"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12.5" rx="2"></rect><path d="M8.5 20.5h7M12 16.5v4M12 13V7.8M9.6 10.2L12 7.8l2.4 2.4"></path></svg></span><span class="cw-cap">Экран</span></button>
+                    <button type="button" id="gcall-speaker" class="cw-btn"><span class="cw-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"></path><path class="cw-wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"></path><path class="cw-x" d="M4 4l16 16"></path></svg></span><span class="cw-cap">Звук</span></button>
+                    <button type="button" id="gcall-leave" class="cw-btn cw-red"><span class="cw-ic cw-ic-hang"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg></span><span class="cw-cap">Выйти</span></button>
+                </div>
+            </div>
+            <span class="cw-grip" title="Потяните, чтобы изменить размер окна" aria-hidden="true"></span>
+        </div>
+        
+
+        <div id="admin-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.5); z-index:2500; align-items:center; justify-content:center;">
+            <table border="1" cellpadding="20" cellspacing="0" bgcolor="#FFFFFF" width="420" style="border-collapse:collapse; border-color:#d0d0d0;">
+                <tbody><tr>
+                    <td align="center">
+                        <b>Сообщение от администрации huEVO</b>
+                        <hr>
+                        <div id="admin-modal-text" style="white-space:pre-wrap; word-wrap:break-word; text-align:left;"></div>
+                        <br>
+                        <input type="button" id="admin-modal-ok" value="Понятно">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div id="hue-loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+             background:rgba(0,0,0,0.35); z-index:3000; align-items:center; justify-content:center;">
+            <div style="background:rgba(0,0,0,0.75); border-radius:10px; padding:22px 28px; text-align:center;
+                        min-width:120px;">
+                <div id="hue-loader-spinner"></div>
+                <div id="hue-loader-text" style="color:#FFFFFF; font-family:sans-serif; font-size:13px;
+                     margin-top:12px;">Отправка...</div>
+            </div>
+        </div>
+
+        <div id="hue-toast" style="display: none; position: fixed; right: 16px; bottom: 16px; z-index: 2600; max-width: 340px; padding: 10px 14px; border-radius: 6px; color: rgb(255, 255, 255); font-family: sans-serif; font-size: 13px; box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 10px; background: rgb(60, 118, 61);" class="" role="status">+1 монэтка в копилку!</div>
+
+        <div id="media-modal" onclick="if(event.target === this){ closeMediaModal(); }" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:2000; align-items:center; justify-content:center; cursor:zoom-out;">
+            <span onclick="closeMediaModal()" style="position:absolute; top:15px; right:25px; color:#EEEEEE; font-size:32px; font-weight:bold; cursor:pointer; font-family:Arial, sans-serif; line-height:1;" title="Закрыть (Esc)">×</span>
+            <img id="media-modal-img" src="" style="display:none; max-width:90%; max-height:88%; border:3px solid #fff; box-shadow:0 0 25px rgba(0,0,0,0.6); cursor:default;">
+            <div id="media-modal-vbox" class="hue-mv-player" style="display:none;"><video id="media-modal-video" src="" controls="" playsinline="" preload="auto"></video></div>
+            <a id="media-modal-dl" href="#" data-pv-download="1" download="" style="display:none; position:absolute; left:50%; bottom:calc(14px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:4; padding:6px 14px; background:rgba(0,0,0,0.6); color:#FFFFFF; font:bold 13px Arial, sans-serif; text-decoration:none; border:1px solid rgba(255,255,255,0.5); cursor:pointer;" title="Скачать оригинал">Скачать</a>
+        </div>
+
+        <script>window.HUE_ME = "looperman"; window.HUE_SOUND_OFF = false; window.HUE_AUDIO_STATUS = false;</script>
+        <script src="/static/js/huevo-media.js?v=9586761061"></script>
+        <script src="/static/js/huevo-ui.js?v=2e531c962c"></script>
+        <script src="/static/js/huevo-video.js?v=f251ce5248"></script>
+        <script src="/static/js/huevo-cfrom.js?v=e763d73aa0"></script>
+        <script src="/static/js/huevo-env.js?v=78c7220134" data-u="8320" defer=""></script>
+        <script src="/static/js/huevo-gif.js?v=4946ccf241"></script>
+        <script src="/static/js/huevo-sticker.js?v=b544af98db"></script>
+        <script src="/static/js/huevo-feed.js?v=9571c1e6ef"></script>
+        <script src="/static/js/huevo-scroll.js?v=274df395bb"></script>
+        <script src="/static/js/huevo-chatmedia.js?v=2814b11f9b"></script>
+        <script src="/static/js/huevo-share.js?v=7818f6bc30"></script>
+        <script src="/static/js/huevo-games-host.js?v=e7277bdab4"></script>
+        <script src="/static/js/huevo-mention.js?v=562f967d53"></script>
+        <script src="/static/js/huevo-job.js?v=a0457454d3"></script>
+        <script src="/static/js/huevo-flists.js?v=4433a5fe41"></script>
+        <script src="/static/js/huevo-attach.js?v=2375e5146a"></script>
+        <script src="/static/js/huevo-mpick.js?v=83fa5cb578"></script>
+        <script src="/static/js/huevo-pjax.js?v=38ea7e5e19"></script><div id="hue-progress"></div><div id="hue-loading-note">Загрузка...</div>
+        <script src="/static/js/huevo-player.js?v=4c758bf1a7"></script><div id="ap-mini"><div class="ap-mini-progress"><i class="ap-mini-bar" style="width: 0%;"></i></div><span class="ap-mini-cover"></span><span class="ap-mini-title"></span><button type="button" class="ap-mini-play" aria-label="Играть / пауза"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"></path></svg></button><button type="button" class="ap-mini-next" aria-label="Следующая"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.8 5H18v14h-2.2zM4.5 5.3v13.4L14.6 12z"></path></svg></button><button type="button" class="ap-mini-close" aria-label="Закрыть" title="Остановить и скрыть плеер"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"></path></svg></button></div>
+        <script src="/static/js/huevo-panel.js?v=0572aeb3bd"></script>
+        <script src="/static/js/huevo-music.js?v=530d0a913d"></script>
+        <script src="/static/js/huevo-app.js?v=04bf7f4b51"></script>
+        <script src="/static/js/huevo-giveaway.js?v=eaefff4e50"></script>
+        <script src="/static/js/huevo-scratch.js?v=233cfa068f"></script>
+        <script src="/static/js/huevo-audience.js?v=f1ce1e92ea"></script>
+        <script src="/static/js/huevo-ucard.js?v=c3dca437b5"></script>
+        <script src="/static/js/huevo-crop.js?v=b6ddd08b9d"></script>
+        
+        
+        <script>
+            (function() {
+                window.HUE_MC_CSS = "/static/css/huevo-minichat.css?v=393f9c2358";
+                window.HUE_MC_FOLDED = false;
+                var src = "/static/js/huevo-minichat.js?v=a319b6188e", done = false, mq = window.matchMedia && window.matchMedia('(min-width: 1001px)');
+                function go() {
+                    if (done || !mq || !mq.matches) return;
+                    done = true;
+                    var s = document.createElement('script');
+                    s.src = src;
+                    s.async = true;
+                    document.body.appendChild(s);
+                }
+                // не ждем load: на страницах с тяжелыми картинками и звуком (Звучок, рулетка, админка) он приходит
+                // поздно или не приходит вовсе - и плашки не было. После разбора страницы, в свободную минуту
+                function later() {
+                    if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 1500 });
+                    else setTimeout(go, 500);
+                }
+                if (document.readyState !== 'loading') later(); else document.addEventListener('DOMContentLoaded', later);
+                if (mq && mq.addEventListener) mq.addEventListener('change', go);
+            })();
+        </script>
+        
+        <script>window.HUE_DEVIL_JS = "/static/js/huevo-devil.js?v=85a0e23e46";</script>
+        
+
+    
+
+<script src="/static/js/huevo-minichat.js?v=a319b6188e" async=""></script><div id="hue-mc" hidden=""><div class="mc-wins"></div><div class="mc-list" hidden=""><div class="mc-list-head"><b>Друзья и диалоги</b><a href="#" class="mc-x" data-mc-list-x="1" title="Свернуть">×</a></div><input type="search" class="mc-search" placeholder="Поиск" aria-label="Поиск по друзьям и диалогам" maxlength="60"><div class="mc-list-body"></div><a href="/settings#friends-bar" class="mc-list-off">Скрыть плашку</a></div><div class="mc-bar" aria-label="Друзья"><div class="mc-avs"></div><button type="button" class="mc-fold" data-mc-fold="1" title="Свернуть плашку" aria-label="Свернуть плашку"><span class="hue-ico hue-ico-chev-r" aria-hidden="true"></span></button><button type="button" class="mc-count" data-mc-list="1" title="Друзья в сети: 0"><span class="hue-ico hue-ico-friends" aria-hidden="true"></span><b class="mc-online">0</b><b class="mc-badge mc-total" hidden=""></b></button></div></div></body>
