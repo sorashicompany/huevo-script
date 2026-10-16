@@ -44,4 +44,4 @@ Use
 
 Build
 -----
-Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. Chromium must be installed separately on the computer running the app: python -m playwright install chromium.
+Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. The GitHub Actions artifact includes HuevoHelper.exe and the `playwright-browsers` directory. Extract the entire artifact and keep that directory next to the EXE; do not copy the EXE alone. Chromium is configured to load from that bundled directory.
