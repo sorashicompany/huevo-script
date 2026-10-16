@@ -6,7 +6,7 @@ Windows desktop clicker helper. No Google sign-in or cloud account is required.
 Features
 - Opens https://huevo.su/clicker, allows manual Huevo sign-in, selection of a page control, and start/stop clicking.
 - Shows click totals, session count, speed, elapsed time, and logs.
-- Keeps the Huevo website login in a persistent local Chrome profile.
+- Opens the installed Google Chrome as a separate browser process and connects to it through its local DevTools endpoint. The login profile is persistent.
 - Shows click statistics locally; cloud statistics are disabled.
 - Limits: 5 clicks/second and 10,000 clicks/session.
 
@@ -28,4 +28,4 @@ Use
 
 Build
 -----
-Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. The GitHub Actions artifact contains only `HuevoHelper.exe`. The app uses Google Chrome installed on Windows, so no separate browser folder is needed. If Chrome is missing, install Google Chrome and launch the app again.
+Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. The GitHub Actions artifact contains only `HuevoHelper.exe`. The app uses Google Chrome installed on Windows and attaches to its separately launched window through a local DevTools endpoint, so no browser bundle is needed. If Chrome is missing, install Google Chrome and launch the app again.
