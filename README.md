@@ -17,7 +17,6 @@ Run from source (Windows 10/11, Python 3.10+)
 py -m venv .venv
 .\\.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
-python -m playwright install chromium
 python main.py
 
 Use
@@ -29,4 +28,4 @@ Use
 
 Build
 -----
-Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. The GitHub Actions artifact includes HuevoHelper.exe and the `playwright-browsers` directory. Extract the entire artifact and keep that directory next to the EXE; do not copy the EXE alone. Chromium is configured to load from that bundled directory.
+Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. The GitHub Actions artifact contains only `HuevoHelper.exe`. The app uses Microsoft Edge installed on Windows, so no separate browser folder is needed. If Edge is missing, install Microsoft Edge and launch the app again.
