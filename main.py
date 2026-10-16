@@ -17,6 +17,8 @@ class HuevoHelper:
   self.root=root
   root.title(APP_TITLE); root.geometry("620x510"); root.minsize(560,450); root.resizable(True,True)
   self.browser=self.context=self.page=self.playwright=None; self.chrome_process=None
+  self.bottle_browser=self.bottle_context=self.bottle_page=self.bottle_playwright=None; self.bottle_process=None
+  self.bottle_running=False; self.bottle_after_id=None
   self.running=False; self.session_clicks=0; self.total_clicks=0; self.started_at=None; self.after_id=None
   self.show_main(); root.protocol("WM_DELETE_WINDOW",self.close)
  def show_main(self):
@@ -28,7 +30,13 @@ class HuevoHelper:
   self.url=tk.StringVar(value=DEFAULT_URL)
   ttk.Entry(a,textvariable=self.url).pack(side="left",fill="x",expand=True,padx=8)
   self.open_btn=ttk.Button(a,text="Открыть браузер",command=self.open_browser); self.open_btn.pack(side="left")
-  self.goto_btn=ttk.Button(o,text="Перейти к clicker",command=self.go_clicker,state="disabled"); self.goto_btn.pack(anchor="w",pady=(0,12))
+  self.goto_btn=ttk.Button(o,text="Перейти к clicker",command=self.go_clicker,state="disabled"); self.goto_btn.pack(anchor="w",pady=(0,8))
+  bottle=ttk.LabelFrame(o,text="Игра в бутылочку",padding=8); bottle.pack(fill="x",pady=(0,10))
+  br=ttk.Frame(bottle); br.pack(fill="x")
+  self.bottle_open_btn=ttk.Button(br,text="Открыть бутылочку",command=self.open_bottle); self.bottle_open_btn.pack(side="left")
+  self.bottle_auto_btn=ttk.Button(br,text="Автонажатия: Старт",command=self.toggle_bottle_auto,state="disabled"); self.bottle_auto_btn.pack(side="left",padx=8)
+  self.bottle_status=tk.StringVar(value="Браузер игры не открыт")
+  ttk.Label(bottle,textvariable=self.bottle_status).pack(anchor="w",pady=(6,0))
   settings=ttk.LabelFrame(o,text="Настройки автокликера",padding=10); settings.pack(fill="x",pady=(0,10))
   row=ttk.Frame(settings); row.pack(fill="x")
   ttk.Label(row,text="Интервал (мс):").pack(side="left")
@@ -91,6 +99,99 @@ class HuevoHelper:
    self.goto_btn.configure(state="normal"); self.log("Chrome подключён: "+p.geturl()); self.check_target()
   except Exception as e:
    self.log("Ошибка браузера: "+str(e)); messagebox.showerror("Ошибка запуска Chrome",str(e)[:600]); self.dispose()
+ def open_bottle(self):
+  if self.bottle_page:
+   try:
+    if not self.bottle_page.is_closed():
+     self.bottle_page.bring_to_front()
+     return
+   except Exception: pass
+  bottle_dir=Path(os.environ.get("LOCALAPPDATA",str(Path.home()))) / "HuevoHelper" / "bottle-profile"
+  bottle_dir.mkdir(parents=True,exist_ok=True)
+  port_file=bottle_dir/"DevToolsActivePort"
+  try: port_file.unlink(missing_ok=True)
+  except OSError: pass
+  try:
+   chrome=self.locate_chrome()
+   if not chrome: raise FileNotFoundError("Google Chrome не найден. Установи обычный Google Chrome.")
+   args=[str(chrome),"--remote-debugging-port=0",f"--user-data-dir={bottle_dir}","--no-first-run","--no-default-browser-check","https://huevo.su/apps/"]
+   self.bottle_process=subprocess.Popen(args,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=getattr(subprocess,"CREATE_NO_WINDOW",0))
+   deadline=time.monotonic()+20
+   while time.monotonic()<deadline and not port_file.exists():
+    if self.bottle_process.poll() is not None: raise RuntimeError("Chrome для бутылочки завершился до запуска.")
+    time.sleep(.2)
+   if not port_file.exists(): raise TimeoutError("Chrome для бутылочки не открыл интерфейс управления за 20 секунд.")
+   port=port_file.read_text(encoding="utf-8").splitlines()[0].strip()
+   self.bottle_playwright=sync_playwright().start()
+   self.bottle_browser=self.bottle_playwright.chromium.connect_over_cdp("http://127.0.0.1:"+port)
+   if not self.bottle_browser.contexts: raise RuntimeError("Вкладки браузера бутылочки недоступны.")
+   self.bottle_context=self.bottle_browser.contexts[0]
+   self.bottle_page=self.bottle_context.pages[0] if self.bottle_context.pages else self.bottle_context.new_page()
+   if self.bottle_page.url=="about:blank": self.bottle_page.goto("https://huevo.su/apps/",wait_until="domcontentloaded",timeout=60000)
+   self.bottle_auto_btn.configure(state="normal")
+   self.bottle_status.set("Бутылочка открыта — автонажатия выключены")
+   self.log("Открыт отдельный браузер для игры в бутылочку")
+  except Exception as e:
+   self.log("Ошибка запуска бутылочки: "+str(e))
+   messagebox.showerror("Ошибка запуска бутылочки",str(e)[:600])
+   self.dispose_bottle()
+
+ def toggle_bottle_auto(self):
+  if not self.bottle_page:
+   messagebox.showinfo("Бутылочка","Сначала нажми «Открыть бутылочку».")
+   return
+  self.bottle_running=not self.bottle_running
+  if self.bottle_running:
+   self.bottle_auto_btn.configure(text="Автонажатия: Стоп")
+   self.bottle_status.set("Автонажатия включены — ожидание кнопок игры")
+   self.log("Автонажатия в бутылочке включены")
+   self.bottle_tick()
+  else:
+   if self.bottle_after_id:
+    try: self.root.after_cancel(self.bottle_after_id)
+    except Exception: pass
+    self.bottle_after_id=None
+   self.bottle_auto_btn.configure(text="Автонажатия: Старт")
+   self.bottle_status.set("Автонажатия выключены")
+   self.log("Автонажатия в бутылочке выключены")
+
+ def bottle_tick(self):
+  if not self.bottle_running or not self.bottle_page: return
+  try:
+   frame=self.bottle_page.frame_locator("iframe#apps-game-frame")
+   yes=frame.locator("#bt-yes")
+   spin=frame.locator("#bt-spin")
+   if yes.count() and yes.is_visible() and yes.is_enabled():
+    yes.click(timeout=1500)
+    self.log("Бутылочка: нажато «Поцеловать»")
+   elif spin.count() and spin.is_visible() and spin.is_enabled():
+    spin.click(timeout=1500)
+    self.log("Бутылочка: нажато «Крутить бутылочку»")
+   self.bottle_after_id=self.root.after(250,self.bottle_tick)
+  except Exception:
+   # The game iframe may be reloading between rounds; keep polling while enabled.
+   self.bottle_after_id=self.root.after(500,self.bottle_tick)
+
+ def dispose_bottle(self):
+  self.bottle_running=False
+  if self.bottle_after_id:
+   try: self.root.after_cancel(self.bottle_after_id)
+   except Exception: pass
+   self.bottle_after_id=None
+  try:
+   if self.bottle_browser: self.bottle_browser.close()
+  except Exception: pass
+  try:
+   if self.bottle_playwright: self.bottle_playwright.stop()
+  except Exception: pass
+  try:
+   if self.bottle_process and self.bottle_process.poll() is None:
+    self.bottle_process.terminate()
+    try: self.bottle_process.wait(timeout=3)
+    except subprocess.TimeoutExpired: self.bottle_process.kill()
+  except Exception: pass
+  self.bottle_browser=self.bottle_context=self.bottle_playwright=self.bottle_page=self.bottle_process=None
+
  def go_clicker(self):
   try:
    self.page.goto(DEFAULT_URL,wait_until="domcontentloaded",timeout=60000); self.url.set(DEFAULT_URL); self.check_target()
@@ -181,7 +282,7 @@ class HuevoHelper:
   except Exception: pass
   self.context=self.browser=self.playwright=self.page=self.chrome_process=None
  def close(self):
-  self.stop("Приложение закрывается."); self.dispose(); self.root.destroy()
+  self.stop("Приложение закрывается."); self.dispose_bottle(); self.dispose(); self.root.destroy()
 
 if __name__=="__main__":
  root=tk.Tk()
