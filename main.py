@@ -116,7 +116,8 @@ class HuevoHelper:
         self.url_var.set(url)
         self.open_btn.configure(state="disabled")
         self.status_var.set("Запуск браузера…")
-        threading.Thread(target=self._start_browser, args=(url,), daemon=True).start()
+        # Playwright sync objects must be created and used on the same thread.
+        self._start_browser(url)
 
     def _start_browser(self, url: str):
         try:
