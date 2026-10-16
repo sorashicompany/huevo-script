@@ -66,17 +66,19 @@ class HuevoHelper:
    local=Path(os.environ.get("LOCALAPPDATA", str(Path.home())))
    candidates=[
     local/"Google"/"Chrome"/"Application"/"chrome.exe",
-    Path(os.environ.get("PROGRAMFILES",r"C:\\Program Files"))/"Google"/"Chrome"/"Application"/"chrome.exe",
-    Path(os.environ.get("PROGRAMFILES(X86)",r"C:\\Program Files (x86)"))/"Google"/"Chrome"/"Application"/"chrome.exe",
+    Path(os.environ.get("PROGRAMFILES",r"C:\Program Files"))/"Google"/"Chrome"/"Application"/"chrome.exe",
+    Path(os.environ.get("PROGRAMFILES(X86)",r"C:\Program Files (x86)"))/"Google"/"Chrome"/"Application"/"chrome.exe",
    ]
    chrome=next((x for x in candidates if x.is_file()),None)
    if not chrome:raise FileNotFoundError("Google Chrome не найден. Установи обычный Google Chrome.")
    # Launch Chrome as a normal external browser, then attach over its local DevTools endpoint.
    # A dedicated persistent profile is required by recent Chrome versions for remote debugging.
+   port_file=USER_DATA_DIR/"DevToolsActivePort"
+   try:port_file.unlink(missing_ok=True)
+   except OSError:pass
    args=[str(chrome),"--remote-debugging-port=0",f"--user-data-dir={USER_DATA_DIR}","--no-first-run","--no-default-browser-check",p.geturl()]
    flags=getattr(subprocess,"CREATE_NO_WINDOW",0)
    self.chrome_process=subprocess.Popen(args,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=flags)
-   port_file=USER_DATA_DIR/"DevToolsActivePort"
    deadline=time.monotonic()+20
    while time.monotonic()<deadline and not port_file.exists():
     if self.chrome_process.poll() is not None:raise RuntimeError("Chrome завершился до запуска удалённого интерфейса.")
