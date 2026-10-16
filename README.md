@@ -1,41 +1,47 @@
-# HuevoHelper
+HuevoHelper
+===========
 
-Windows desktop helper for the Huevo clicker page. Built with Python, Tkinter, and Playwright.
+Windows desktop clicker helper with a compact Google sign-in window and Supabase Auth.
 
-## What it does
-- Opens `https://huevo.su/clicker` in a separate Chromium window.
-- You sign in yourself in the browser; the app does not ask for or store credentials.
-- Scans visible page controls and lets you select the intended piggy-bank/cat element.
-- Provides a single-click button and a start/stop autoclicker.
-- Shows successful click totals, session count, average rate, elapsed time, and timestamped logs.
-- Safety limits: up to 5 clicks per second and 10,000 clicks per session. The app does not attempt to bypass CAPTCHA, anti-bot controls, or site restrictions.
+Features
+- Google OAuth PKCE sign-in through the system browser.
+- Opens https://huevo.su/clicker, allows manual Huevo sign-in, selection of a page control, and start/stop clicking.
+- Shows click totals, session count, speed, elapsed time, and logs.
+- Stores user profiles and click session statistics in Supabase with per-user row-level security.
+- Limits: 5 clicks/second and 10,000 clicks/session.
 
-Use automated clicking only if the site's rules allow it. The app cannot guarantee that a click was credited by the service; its statistics count successful browser click actions.
+Statistics count successful browser click actions; the app cannot guarantee the website credited every action. Use automation only if permitted by the site's rules. The app does not bypass CAPTCHA or anti-bot protections.
 
-## Run from source
-Windows 10/11 and Python 3.10+:
-```powershell
+One-time Supabase / Google OAuth setup
+--------------------------------------
+Supabase project: https://supabase.com/dashboard/project/hzcexklqkpgkdbpzdhfx
+
+1. In Supabase Dashboard, open Authentication -> Sign In / Providers -> Google and enable Google.
+2. In Google Cloud Console (https://console.cloud.google.com/), configure the OAuth consent screen and create an OAuth client ID of type Web application.
+3. In Google OAuth Authorized redirect URIs, add exactly:
+   https://hzcexklqkpgkdbpzdhfx.supabase.co/auth/v1/callback
+4. Copy the Google client ID and client secret into the Supabase Google provider settings and save.
+5. In Supabase Authentication -> URL Configuration -> Redirect URLs, add exactly:
+   http://127.0.0.1:8765/callback
+6. Google OAuth will not work until the provider credentials and redirect allowlist are configured.
+
+Never put the Google client secret or a Supabase service-role key in the app or repository. The app uses only a publishable key and the signed-in user's access token.
+
+Run from source (Windows 10/11, Python 3.10+)
+---------------------------------------------
 py -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\\.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
 python -m playwright install chromium
 python main.py
-```
 
-## Use
-1. Launch HuevoHelper.
-2. Click **Открыть браузер**. The clicker page opens.
-3. Sign in manually if needed.
-4. Click **Обновить элементы**.
-5. Select the row corresponding to the piggy-bank/cat on the page.
-6. Click **Старт автокликера** and confirm. Click **Стоп** to stop at any time.
+Use
+---
+1. Launch HuevoHelper and click Продолжить с Google.
+2. Finish Google sign-in in the browser; the app returns to the main window.
+3. Open the browser, sign in to Huevo manually if needed, select the intended clicker element.
+4. Click Старт автокликера, then Стоп. Session statistics are sent to Supabase when the session ends.
 
-If the page uses an unlabeled canvas rather than a button, it may not appear in the element list; this version intentionally does not guess coordinates.
-
-## Build
-Run `build.bat`, or download the Windows executable from the latest successful GitHub Actions run's `HuevoHelper-Windows` artifact. Chromium must be installed separately on the computer running the app:
-```powershell
-py -m playwright install chromium
-```
-
-The GitHub Actions workflow builds `dist/HuevoHelper.exe` and publishes it as an artifact for 14 days.
+Build
+-----
+Run build.bat or download the HuevoHelper-Windows artifact from GitHub Actions. Chromium must be installed separately on the computer running the app: python -m playwright install chromium.
