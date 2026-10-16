@@ -32,27 +32,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Playwright Chromium
-        shell: pwsh
-        run: |
-          $browserPath = Join-Path $env:GITHUB_WORKSPACE "playwright-browsers"
-          $env:PLAYWRIGHT_BROWSERS_PATH = $browserPath
-          "PLAYWRIGHT_BROWSERS_PATH=$browserPath" >> $env:GITHUB_ENV
-          python -m playwright install chromium
-          if (-not (Test-Path $browserPath)) {
-            throw "Playwright browser directory was not created: $browserPath"
-          }
-          Get-ChildItem $browserPath
-
       - name: Build executable
-        shell: pwsh
-        run: |
-          pyinstaller --noconfirm --clean --onefile --windowed --name HuevoHelper main.py
-          $browserPath = Join-Path $env:GITHUB_WORKSPACE "playwright-browsers"
-          if (-not (Test-Path $browserPath)) {
-            throw "Playwright browser directory is missing: $browserPath"
-          }
-          Copy-Item -Path $browserPath -Destination (Join-Path $env:GITHUB_WORKSPACE "dist\playwright-browsers") -Recurse -Force
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name HuevoHelper main.py
 
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
