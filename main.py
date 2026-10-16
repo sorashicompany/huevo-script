@@ -111,8 +111,13 @@ class HuevoHelper:
    self.status.set("Ожидание загрузки кота…")
    if self.page and not self.running: self.root.after(1500,self.check_target)
  def click_cat(self):
-  # DOM click is issued by the app, so it can continue while the Chrome window is minimized.
-  return self.page.evaluate("""selector => { const el=document.querySelector(selector); if(!el) return false; el.click(); return true; }""",TARGET_SELECTOR)
+  # Use Playwright's mouse input rather than HTMLElement.click(): the site may ignore
+  # synthetic DOM clicks (event.isTrusted is false). Force bypasses overlay/actionability checks.
+  target=self.page.locator(TARGET_SELECTOR).first
+  if target.count()==0:
+   return False
+  target.click(force=True, timeout=3000)
+  return True
  def one_click(self):
   try:
    if not self.page or not self.click_cat(): raise RuntimeError("Кот-копилка не найден на странице.")
