@@ -1,8 +1,13 @@
 from __future__ import annotations
-import base64, hashlib, json, secrets, threading, time, tkinter as tk, urllib.error, urllib.parse, urllib.request, webbrowser
+import base64, hashlib, json, os, secrets, sys, threading, time, tkinter as tk, urllib.error, urllib.parse, urllib.request, webbrowser
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from tkinter import messagebox, ttk
 from urllib.parse import urlparse
+
+BASE_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(BASE_DIR / "playwright-browsers")
+
 from playwright.sync_api import sync_playwright
 
 APP_TITLE = "HuevoHelper"
