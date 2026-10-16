@@ -5,11 +5,14 @@ py -m pip install --upgrade pip
 if errorlevel 1 goto :error
 py -m pip install -r requirements.txt
 if errorlevel 1 goto :error
-pyinstaller --noconfirm --clean --onefile --windowed --name HuevoHelper main.py
+pyinstaller --noconfirm --clean --onefile --windowed --name HuevoClicker main.py
+if errorlevel 1 goto :error
+pyinstaller --noconfirm --clean --onefile --windowed --name HuevoBottle bottle.py
 if errorlevel 1 goto :error
 echo.
-echo Build complete: dist\HuevoHelper.exe
-echo HuevoHelper uses Google Chrome installed on Windows. No browser bundle needed.
+echo Build complete:
+echo dist\HuevoClicker.exe
+echo dist\HuevoBottle.exe
 pause
 exit /b 0
 :error
