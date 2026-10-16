@@ -63,9 +63,9 @@ class HuevoHelper:
   u=self.url.get().strip();p=urlparse(u if "://" in u else "https://"+u)
   if p.scheme not in ("http","https") or not p.netloc:messagebox.showerror("Адрес","Введите корректный адрес.");return
   try:
-   self.playwright=sync_playwright().start();self.context=self.playwright.chromium.launch_persistent_context(user_data_dir=str(USER_DATA_DIR),headless=False,channel="msedge");self.browser=self.context.browser;self.page=self.context.pages[0] if self.context.pages else self.context.new_page();self.page.goto(p.geturl(),wait_until="domcontentloaded",timeout=60000)
+   self.playwright=sync_playwright().start();self.context=self.playwright.chromium.launch_persistent_context(user_data_dir=str(USER_DATA_DIR),headless=False,channel="chrome");self.browser=self.context.browser;self.page=self.context.pages[0] if self.context.pages else self.context.new_page();self.page.goto(p.geturl(),wait_until="domcontentloaded",timeout=60000)
    self.scan_btn.configure(state="normal");self.goto_btn.configure(state="normal");self.status.set("Браузер открыт");self.log("Открыта страница: "+p.geturl());self.scan()
-  except Exception as e:self.log("Ошибка браузера: "+str(e));messagebox.showerror("Не найден Microsoft Edge","Для уменьшения размера приложения HuevoHelper использует установленный в Windows Microsoft Edge. Установите или восстановите Edge, затем запустите приложение снова.\\n\\n"+str(e)[:500]);self.dispose()
+  except Exception as e:self.log("Ошибка браузера: "+str(e));messagebox.showerror("Не найден Google Chrome","Для уменьшения размера приложения HuevoHelper использует установленный Google Chrome. Установите Chrome, затем запустите приложение снова.\\n\\n"+str(e)[:500]);self.dispose()
  def go_clicker(self):
   try:self.page.goto(DEFAULT_URL,wait_until="domcontentloaded",timeout=60000);self.url.set(DEFAULT_URL);self.scan()
   except Exception as e:messagebox.showerror("Ошибка перехода",str(e)[:700])
