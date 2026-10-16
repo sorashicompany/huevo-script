@@ -1,5 +1,5 @@
 from __future__ import annotations
-import os, sys, time, tkinter as tk
+import os, sys, time, subprocess, tkinter as tk
 from pathlib import Path
 from tkinter import messagebox, ttk
 from urllib.parse import urlparse
@@ -24,7 +24,7 @@ SCAN_SCRIPT = r"""() => {
 class HuevoHelper:
  def __init__(self,root):
   self.root=root;root.title(APP_TITLE);root.geometry("380x300");root.resizable(False,False)
-  self.browser=self.context=self.page=self.playwright=None;self.items=[];self.running=False
+  self.browser=self.context=self.page=self.playwright=None;self.chrome_process=None;self.items=[];self.running=False
   self.lifetime=0;self.session_clicks=0;self.started_at=None;self.session_started=None
   self.show_main();root.protocol("WM_DELETE_WINDOW",self.close)
  def show_main(self):
@@ -63,9 +63,37 @@ class HuevoHelper:
   u=self.url.get().strip();p=urlparse(u if "://" in u else "https://"+u)
   if p.scheme not in ("http","https") or not p.netloc:messagebox.showerror("Адрес","Введите корректный адрес.");return
   try:
-   self.playwright=sync_playwright().start();self.context=self.playwright.chromium.launch_persistent_context(user_data_dir=str(USER_DATA_DIR),headless=False,channel="chrome");self.browser=self.context.browser;self.page=self.context.pages[0] if self.context.pages else self.context.new_page();self.page.goto(p.geturl(),wait_until="domcontentloaded",timeout=60000)
-   self.scan_btn.configure(state="normal");self.goto_btn.configure(state="normal");self.status.set("Браузер открыт");self.log("Открыта страница: "+p.geturl());self.scan()
-  except Exception as e:self.log("Ошибка браузера: "+str(e));messagebox.showerror("Не найден Google Chrome","Для уменьшения размера приложения HuevoHelper использует установленный Google Chrome. Установите Chrome, затем запустите приложение снова.\\n\\n"+str(e)[:500]);self.dispose()
+   local=Path(os.environ.get("LOCALAPPDATA", str(Path.home())))
+   candidates=[
+    local/"Google"/"Chrome"/"Application"/"chrome.exe",
+    Path(os.environ.get("PROGRAMFILES",r"C:\\Program Files"))/"Google"/"Chrome"/"Application"/"chrome.exe",
+    Path(os.environ.get("PROGRAMFILES(X86)",r"C:\\Program Files (x86)"))/"Google"/"Chrome"/"Application"/"chrome.exe",
+   ]
+   chrome=next((x for x in candidates if x.is_file()),None)
+   if not chrome:raise FileNotFoundError("Google Chrome не найден. Установи обычный Google Chrome.")
+   # Launch Chrome as a normal external browser, then attach over its local DevTools endpoint.
+   # A dedicated persistent profile is required by recent Chrome versions for remote debugging.
+   args=[str(chrome),"--remote-debugging-port=0",f"--user-data-dir={USER_DATA_DIR}","--no-first-run","--no-default-browser-check",p.geturl()]
+   flags=getattr(subprocess,"CREATE_NO_WINDOW",0)
+   self.chrome_process=subprocess.Popen(args,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=flags)
+   port_file=USER_DATA_DIR/"DevToolsActivePort"
+   deadline=time.monotonic()+20
+   while time.monotonic()<deadline and not port_file.exists():
+    if self.chrome_process.poll() is not None:raise RuntimeError("Chrome завершился до запуска удалённого интерфейса.")
+    time.sleep(0.2)
+   if not port_file.exists():raise TimeoutError("Chrome не открыл локальный интерфейс управления за 20 секунд.")
+   port=port_file.read_text(encoding="utf-8").splitlines()[0].strip()
+   self.playwright=sync_playwright().start()
+   self.browser=self.playwright.chromium.connect_over_cdp("http://127.0.0.1:"+port)
+   if not self.browser.contexts:raise RuntimeError("Chrome запущен, но вкладки недоступны.")
+   self.context=self.browser.contexts[0]
+   self.page=self.context.pages[0] if self.context.pages else self.context.new_page()
+   if self.page.url=="about:blank":self.page.goto(p.geturl(),wait_until="domcontentloaded",timeout=60000)
+   self.scan_btn.configure(state="normal");self.goto_btn.configure(state="normal");self.status.set("Chrome подключён");self.log("Подключено обычное окно Google Chrome: "+p.geturl());self.scan()
+  except Exception as e:
+   self.log("Ошибка браузера: "+str(e))
+   messagebox.showerror("Не удалось запустить Chrome","HuevoHelper запускает установленный Google Chrome отдельным процессом и подключается к нему локально. Проверь Chrome и попробуй снова.\\n\\n"+str(e)[:500])
+   self.dispose()
  def go_clicker(self):
   try:self.page.goto(DEFAULT_URL,wait_until="domcontentloaded",timeout=60000);self.url.set(DEFAULT_URL);self.scan()
   except Exception as e:messagebox.showerror("Ошибка перехода",str(e)[:700])
@@ -121,11 +149,19 @@ class HuevoHelper:
   if not hasattr(self,"total"):return
   self.total.set(f"{(self.lifetime+self.session_clicks) if self.running else self.lifetime:,}");self.session.set(f"{self.session_clicks:,}");d=max(0,time.monotonic()-(self.started_at or time.monotonic()));self.elapsed.set(time.strftime("%H:%M:%S",time.gmtime(d)));self.rate.set(f"{self.session_clicks/d:.1f} клика/с" if d else "0.0 клика/с")
  def dispose(self):
-  for obj,method in ((self.context,"close"),(self.browser,"close"),(self.playwright,"stop")):
-   try:
-    if obj:getattr(obj,method)()
-   except Exception:pass
-  self.context=self.browser=self.playwright=self.page=None
+  try:
+   if self.browser:self.browser.close()
+  except Exception:pass
+  try:
+   if self.playwright:self.playwright.stop()
+  except Exception:pass
+  try:
+   if self.chrome_process and self.chrome_process.poll() is None:
+    self.chrome_process.terminate()
+    try:self.chrome_process.wait(timeout=3)
+    except subprocess.TimeoutExpired:self.chrome_process.kill()
+  except Exception:pass
+  self.context=self.browser=self.playwright=self.page=self.chrome_process=None
  def close(self):
   self.stop("Приложение закрывается.");self.dispose();self.root.destroy()
 
