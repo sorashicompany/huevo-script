@@ -1,19 +1,19 @@
-# Huevo Desktop Helper
+# HuevoHelper
 
-A small Windows desktop helper built from scratch with Python, Tkinter, and Playwright. The repository previously had no source files, so this is a clean starter implementation rather than a recreation of an unavailable original script.
+Windows desktop helper for the Huevo clicker page. Built with Python, Tkinter, and Playwright.
 
-## Features
-- Open a website in a separate Chromium window.
-- Inspect visible buttons, links, and form fields.
-- Select an element and optionally click it after a confirmation prompt.
-- No password capture, credential storage, or hidden background actions.
+## What it does
+- Opens `https://huevo.su/clicker` in a separate Chromium window.
+- You sign in yourself in the browser; the app does not ask for or store credentials.
+- Scans visible page controls and lets you select the intended piggy-bank/cat element.
+- Provides a single-click button and a start/stop autoclicker.
+- Shows successful click totals, session count, average rate, elapsed time, and timestamped logs.
+- Safety limits: up to 5 clicks per second and 10,000 clicks per session. The app does not attempt to bypass CAPTCHA, anti-bot controls, or site restrictions.
 
-## Requirements
-- Windows 10/11
-- Python 3.10+
-- Internet access for the first Playwright browser installation
+Use automated clicking only if the site's rules allow it. The app cannot guarantee that a click was credited by the service; its statistics count successful browser click actions.
 
 ## Run from source
+Windows 10/11 and Python 3.10+:
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -22,10 +22,20 @@ python -m playwright install chromium
 python main.py
 ```
 
-## Build a Windows executable
-Run `build.bat`. The executable will be placed in `dist\HuevoHelper.exe`.
+## Use
+1. Launch HuevoHelper.
+2. Click **Открыть браузер**. The clicker page opens.
+3. Sign in manually if needed.
+4. Click **Обновить элементы**.
+5. Select the row corresponding to the piggy-bank/cat on the page.
+6. Click **Старт автокликера** and confirm. Click **Стоп** to stop at any time.
 
-Playwright's Chromium browser is installed separately from the executable. On first launch, if Chromium is missing, the app will explain how to install it.
+If the page uses an unlabeled canvas rather than a button, it may not appear in the element list; this version intentionally does not guess coordinates.
 
-## Notes
-This is a generic website helper because the linked repository was empty and did not include an original script or feature specification. Use it only on websites you are authorized to access, and follow the site's rules.
+## Build
+Run `build.bat`, or download the Windows executable from the latest successful GitHub Actions run's `HuevoHelper-Windows` artifact. Chromium must be installed separately on the computer running the app:
+```powershell
+py -m playwright install chromium
+```
+
+The GitHub Actions workflow builds `dist/HuevoHelper.exe` and publishes it as an artifact for 14 days.
