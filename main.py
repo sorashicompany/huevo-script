@@ -127,7 +127,7 @@ class HuevoHelper:
   if not hasattr(self,"logs"):return
   self.logs.configure(state="normal");self.logs.insert("end",f"[{time.strftime('%H:%M:%S')}] {msg}\\n");self.logs.see("end");self.logs.configure(state="disabled")
  def open_browser(self):
-  if self.browser:
+  if self.context:
    try:
     if self.page and not self.page.is_closed():self.page.bring_to_front();return
    except Exception:pass
