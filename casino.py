@@ -11,7 +11,7 @@ from playwright.sync_api import sync_playwright
 APP_TITLE = "Huevo Casino — Шарик"
 GAME_URL = "https://huevo.su/apps/1"
 PROFILE_DIR = Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "HuevoHelper" / "casino-profile"
-PUMP_LIMIT = 4
+PUMP_LIMIT = 3
 
 
 class CasinoApp:
@@ -26,6 +26,7 @@ class CasinoApp:
         self.base_bet = 1.0
         self.pumps = 0
         self.loss_handled = False
+        self.round_started = False
         self.next_action_at = 0.0
         self.total_rounds = 0
         self.losses = 0
@@ -182,6 +183,8 @@ class CasinoApp:
                             return btn
                         if label == "×2" and "×2" in btn.inner_text():
                             return btn
+                        if label == "Надуть шарик" and "Надуть шарик" in btn.inner_text():
+                            return btn
                     except Exception:
                         pass
             except Exception:
@@ -202,6 +205,11 @@ class CasinoApp:
             self.base_bet = amount
             self.pumps = 0
             self.loss_handled = False
+            self.round_started = False
+            if not self.set_bet(self.base_bet):
+                self.log("Не найдено редактируемое поле ставки. Выбери игру «Шарик» и проверь поле ставки.")
+                self.status.set("Не найдено поле ставки")
+                return
             self.running = True
             self.toggle_btn.configure(text="Стоп")
             self.status.set("Работаю — ожидание игры «Шарик»")
@@ -251,6 +259,7 @@ class CasinoApp:
                         self.stop("Не найдена кнопка ×2")
                         return
                     self.pumps = 0
+                    self.round_started = False
                     self.next_action_at = now + 1.2
                 self.after_id = self.root.after(250, self.tick)
                 return
@@ -259,15 +268,29 @@ class CasinoApp:
                 self.loss_handled = False
                 self.next_action_at = now + 0.4
 
+            # Start a fresh round explicitly; this action counts as the first pump.
+            if not self.round_started:
+                start_btn = self.find_button("Надуть шарик")
+                if not start_btn:
+                    self.status.set("Ожидаю кнопку «Надуть шарик» — выбери игру «Шарик»")
+                    self.after_id = self.root.after(700, self.tick)
+                    return
+                start_btn.click(timeout=1500)
+                self.round_started = True
+                self.pumps = 1
+                self.log("Нажата кнопка «Надуть шарик» — ход 1/4.")
+                self.next_action_at = now + 0.8
+                self.after_id = self.root.after(250, self.tick)
+                return
+
             pump_btn = self.find_button("Накачать")
             if not pump_btn:
                 self.status.set("Ожидаю кнопку «Накачать» в игре «Шарик»")
                 self.after_id = self.root.after(700, self.tick)
                 return
 
-            # Four pumps per round. If no БАХ! appears after the fourth pump,
-            # count the round as a win and restore the original stake.
-            if self.pumps >= PUMP_LIMIT:
+            # Starting the balloon counts as pump one, so only three more pumps are needed.
+            if self.pumps >= PUMP_LIMIT + 1:
                 self.wins += 1
                 self.total_rounds += 1
                 self.update_stats()
@@ -277,14 +300,15 @@ class CasinoApp:
                     return
                 self.log(f"Раунд без БАХ! Ставка возвращена к {self.base_bet:.2f}.")
                 self.pumps = 0
+                self.round_started = False
                 self.next_action_at = now + 1.0
                 self.after_id = self.root.after(250, self.tick)
                 return
 
             pump_btn.click(timeout=1500)
             self.pumps += 1
-            self.status.set(f"Раунд: нажатие {self.pumps}/{PUMP_LIMIT}")
-            self.log(f"Накачать: {self.pumps}/{PUMP_LIMIT}")
+            self.status.set(f"Раунд: ход {self.pumps}/4")
+            self.log(f"Накачать: ход {self.pumps}/4")
             self.next_action_at = now + 0.8
             self.after_id = self.root.after(250, self.tick)
         except Exception as exc:
