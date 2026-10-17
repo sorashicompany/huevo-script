@@ -6,8 +6,10 @@ on:
     paths:
       - "main.py"
       - "bottle.py"
+      - "casino.py"
       - "requirements.txt"
       - "build.bat"
+      - "README.md"
       - ".github/workflows/build.yml"
 permissions:
   contents: read
@@ -29,6 +31,8 @@ jobs:
         run: pyinstaller --noconfirm --clean --onefile --windowed --name HuevoClicker main.py
       - name: Build bottle app
         run: pyinstaller --noconfirm --clean --onefile --windowed --name HuevoBottle bottle.py
+      - name: Build casino app
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name HuevoCasino casino.py
       - name: Upload clicker app
         uses: actions/upload-artifact@v4
         with:
@@ -41,5 +45,12 @@ jobs:
         with:
           name: HuevoBottle-Windows
           path: dist/HuevoBottle.exe
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload casino app
+        uses: actions/upload-artifact@v4
+        with:
+          name: HuevoCasino-Windows
+          path: dist/HuevoCasino.exe
           if-no-files-found: error
           retention-days: 14
