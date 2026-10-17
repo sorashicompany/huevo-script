@@ -1,0 +1,270 @@
+<head>
+        <meta charset="utf-8">
+        <script>(function(){try{var h=location.hostname.toLowerCase().replace(/^\[|\]$/g,"");if(["127.0.0.1", "::1", "huevo.departament.site", "huevo.su", "localhost", "www.huevo.su"].indexOf(h)<0){location.replace("https://huevo.su"+location.pathname+location.search+location.hash);}}catch(e){}})();</script>
+        <title>EVO — Казино на монэтки</title>
+        <link rel="canonical" href="https://huevo.su/apps/1">
+        <link rel="icon" href="/static/favicon.svg" type="image/svg+xml"><link rel="icon" href="/static/favicon-48.png" sizes="48x48" type="image/png"><link rel="icon" href="/static/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+        
+        <script>
+            window.hueCss = function(l) {
+                var n = +(l.getAttribute('data-r') || 0);
+                if (n > 1 || !l.parentNode) return;
+                var c = l.cloneNode();
+                c.setAttribute('data-r', n + 1);
+                c.href = l.href.replace(/[?&]r=\d+$/, '') + (l.href.indexOf('?') < 0 ? '?' : '&') + 'r=' + (n + 1) + (Date.now() % 1e6);
+                l.parentNode.replaceChild(c, l);
+            };
+            window.addEventListener('load', function() {
+                try {
+                    if (!window.CSS || !CSS.supports || !CSS.supports('--a', '0')) return;
+                    if (getComputedStyle(document.documentElement).getPropertyValue('--hue-css-ok')) return;
+                    var l = document.getElementById('hue-css');
+                    if (l) window.hueCss(l);
+                } catch (e) {}
+            });
+        </script>
+        <link rel="stylesheet" id="hue-css" href="/static/css/huevo.css?v=cb35b32cab" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-modern.css?v=8ddc8cebac" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-market.css?v=5aba0d8b95" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-share.css?v=03a092acfb" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-mgrid.css?v=3274372e42" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-video.css?v=a2e68c11ac" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-stickers.css?v=3acabbc311" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-mobile.css?v=51e4b2f232" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-mobile-apps.css?v=0b861ef8f4" onerror="hueCss(this)">
+        <meta name="theme-color" content="#3A3A3A">
+        <link rel="stylesheet" href="/static/css/huevo-dark.css?v=f99cf5eb95" onerror="window.hueCss&amp;&amp;hueCss(this)"><script>(function(){
+var d=document.documentElement,m=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+var apply=function(){var s=d.getAttribute('data-scheme')||'light',on=s==='dark'||(s==='auto'&&!!m&&m.matches);
+d.classList.toggle('hue-dark',on);var t=document.querySelector('meta[name="theme-color"]');if(t)t.setAttribute('content',on?'#1B1C1E':'#3A3A3A');};
+apply();if(m){if(m.addEventListener)m.addEventListener('change',apply);else if(m.addListener)m.addListener(apply);}
+document.addEventListener('DOMContentLoaded',apply);
+window.hueSetScheme=function(s){if(['light','dark','auto'].indexOf(s)<0)return false;d.setAttribute('data-scheme',s);apply();
+document.querySelectorAll('input[name="scheme"]').forEach(function(r){r.checked=r.value===s;});
+try{var f=new FormData();f.append('scheme',s);fetch('/settings/scheme',{method:'POST',body:f,credentials:'same-origin',headers:{'X-Requested-With':'fetch'}});}catch(e){}
+return false;};})();</script><script>(function(){
+var m=document.querySelector('meta[name="viewport"]');if(!m||!window.matchMedia||window.top!==window)return;
+var W=700,base=null,ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var phone=function(){return matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=520;};
+var land=function(){var o=window.orientation;return typeof o==='number'?Math.abs(o)===90:matchMedia('(orientation: landscape)').matches;};
+var fit=function(){var wide=Math.max(screen.width,screen.height),r=(wide/W).toFixed(4);
+if(phone()&&land()&&wide>W){if(base===null)base=m.getAttribute('content');
+m.setAttribute('content','width='+W+', initial-scale='+r+', maximum-scale='+(r*5).toFixed(2)+', interactive-widget=resizes-content');}
+else if(base!==null){m.setAttribute('content',base);base=null;}};
+if(!ios){fit();window.addEventListener('orientationchange',function(){setTimeout(fit,60);});
+if(screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',fit);}
+window.addEventListener('load',function(){try{
+if(!phone()||land()||window.innerWidth<=760||sessionStorage.getItem('hue_dsk_hint'))return;
+setTimeout(function(){if(!window.hueToast)return;sessionStorage.setItem('hue_dsk_hint','1');window.hueToast('В браузере включена «Версия для ПК» - выключите ее в меню браузера (⋮), и откроется версия для телефона.');},800);
+}catch(e){}});})();</script>
+        <link rel="stylesheet" href="/static/css/huevo-square.css?v=e9e50dee72" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-names.css?v=935dd921eb" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-premium.css?v=65235dedd7" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-job.css?v=a1f2b46bcb" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-flists.css?v=7c0268e47d" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-roulette.css?v=2fcec01f93" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-apps.css?v=456623350c" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-beatbattle.css?v=538e6945d1" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-secure.css?v=91c8ea7c25" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-giveaway.css?v=93b62cb46b" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-scratch.css?v=a91c4ea42f" onerror="hueCss(this)">
+        <link rel="stylesheet" href="/static/css/huevo-audience.css?v=659bc757c4" onerror="hueCss(this)">
+        <script>
+            window.__rawSetInterval = window.setInterval;
+            window.__pageTimers = [];
+            window.HUE_BUILD = "43ac42670c8f";
+            (function() {
+                try {
+                    var tz = String(-new Date().getTimezoneOffset());
+                    if (document.cookie.indexOf('hue_tz=' + tz) === -1) {
+                        document.cookie = 'hue_tz=' + tz + '; path=/; max-age=31536000; samesite=lax';
+                    }
+                } catch (e) {}
+            })();
+            window.HUE_THUMBS = true;
+            window.hueThumb = function(name, size) {
+                if (!name) return '/static/img/noavatar.svg';
+                var orig = '/static/uploads/' + encodeURIComponent(name);
+                if (!window.HUE_THUMBS || /\.(gif|svg)$/i.test(name) || name.indexOf('/') !== -1) return orig;
+                var s = [100, 200, 400, 800].filter(function(x) { return x >= (size || 100); })[0] || 800;
+                return '/static/uploads/_t/' + s + '/' + encodeURIComponent(name) + '.webp';
+            };
+            window.hueCover = function(url, size) {
+                if (!url) return '';
+                var m = /^\/static\/uploads\/(?:_t\/\d+\/)?([^\/?#]+)$/.exec(url);
+                if (!m) return url;
+                var name = m[1];
+                if (url.indexOf('/_t/') !== -1) name = name.replace(/\.webp$/, '');
+                try { name = decodeURIComponent(name); } catch (e) {}
+                return window.hueThumb(name, size);
+            };
+            window.HUE_LOSSLESS_MAX = 31457280;
+            window.hueEsc = function(s) {
+                return String(s === null || s === undefined ? '' : s)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            };
+            window.setInterval = function(fn, delay) {
+                var id = window.__rawSetInterval(fn, delay);
+                window.__pageTimers.push(id);
+                return id;
+            };
+            // Лента чата «прилипает» к последнему сообщению (догрузились картинки, пришло новое - остаемся внизу), пока человек
+            // сам не поднялся выше. Правила:
+            // - своя прокрутка (scrollTop) - никогда посреди жеста человека или его инерции: «человек листает», пока держит
+            //   палец/кнопку мыши и еще 350 мс после последнего колеса/касания/клавиши И после последнего события прокрутки,
+            //   которое сделали не мы. Инерция пальца на телефоне (iOS/Android) идет уже после touchend и событий касания не
+            //   шлет - раньше через 300 мс после touchend лента считалась «свободной», и пришедшее сообщение, картинка, подгонка
+            //   высоты возвращали ее вниз прямо посреди инерции: «залагивает, дергает и возвращает в самый низ»;
+            // - отлепляет любое движение вверх дальше 2 px от низа - колесо/клавиши вверх сразу, палец, ползунок полосы
+            //   прокрутки, инерция - по событию прокрутки (без колеса и касаний тоже: Firefox/Safari, ползунок без pointerdown).
+            //   Сдвиги браузера (overflow-anchor: выше догрузилась картинка; прокрутка поджалась, когда лента стала выше или
+            //   содержимое короче) движением человека не считаются: прокрутка меняется вместе с высотой содержимого или лента
+            //   остается у самого низа;
+            // - прилепляет только сам низ ленты (ближе 2 px) при движении вниз или на месте. Раньше прилипшей лента считалась
+            //   ближе 4 px при любом событии прокрутки, даже первом шаге вверх;
+            // - следует вниз только прилипшая лента, у которой внизу правда что-то прибавилось (зазор от низа), и только когда
+            //   человек ее не листает; иначе - один отложенный повтор, когда жест и инерция кончатся.
+            // Плавная прокрутка кнопки «↓» - своя, по кадрам, и обрывается любым движением человека
+            window.hueChatBottom = function(box) {
+                if (!box || box.__hueStick) return;
+                box.__hueStick = true;
+                var IDLE = 350, END = 2;
+                var stuck = true, ours = null, activeAt = 0, held = false, idleT = 0, anim = 0;
+                var lastTop = 0, lastH = 0, ref = null, refY = 0;
+                var raf = window.requestAnimationFrame, caf = window.cancelAnimationFrame;
+                var gap = function() { return box.scrollHeight - box.scrollTop - box.clientHeight; };
+                // Где лента сейчас относительно содержимого: последний ребенок ленты и его верх на экране. Новое ниже него и
+                // сдвиги overflow-anchor (выше что-то поменяло высоту, браузер поправил прокрутку) его не двигают - двигает только
+                // прокрутка. Узла уже нет (удалили сообщение) - по прокрутке за вычетом изменения высоты содержимого
+                var mark = function() {
+                    lastTop = box.scrollTop; lastH = box.scrollHeight;
+                    ref = box.lastElementChild; refY = 0;
+                    // скрытый узел или слой поверх ленты (position: sticky, кнопка «↓») с прокруткой не двигается - берем соседа выше
+                    for (var i = 0; ref && i < 4; i++, ref = ref.previousElementSibling) {
+                        var r = ref.getBoundingClientRect();
+                        if ((r.height || r.width) && !(ref.classList && ref.classList.contains('hue-chat-over'))) { refY = r.top; return; }
+                    }
+                    ref = null;
+                };
+                var set = function(v) {
+                    var was = box.scrollTop;
+                    box.scrollTop = v;
+                    if (box.scrollTop !== was) ours = box.scrollTop;
+                    mark();
+                };
+                var stop = function() { if (anim) { if (caf) caf(anim); anim = 0; } };
+                var unstick = function() { stuck = false; stop(); };
+                var busy = function() { return held || Date.now() - activeAt < IDLE; };
+                var go = function() {
+                    if (!stuck || anim || gap() < 1) return;
+                    if (busy()) {
+                        // палец/кнопка мыши на ленте - ждем отпускания (release); иначе - когда жест и инерция затихнут
+                        if (!held && !idleT) idleT = setTimeout(function() { idleT = 0; go(); }, Math.max(20, activeAt + IDLE - Date.now() + 10));
+                        return;
+                    }
+                    set(box.scrollHeight);
+                };
+                var touched = function() { activeAt = Date.now(); stop(); };
+                var release = function() { held = false; activeAt = Date.now(); go(); };
+                box.addEventListener('wheel', function(e) { touched(); if (e.deltaY < 0) unstick(); }, { passive: true });
+                box.addEventListener('touchstart', function() { held = true; touched(); }, { passive: true });
+                box.addEventListener('touchmove', touched, { passive: true });
+                var lift = function(e) { if (e && e.touches && e.touches.length) return; release(); };
+                box.addEventListener('touchend', lift, { passive: true });
+                box.addEventListener('touchcancel', lift, { passive: true });
+                box.addEventListener('pointerdown', function(e) {
+                    if (e.pointerType === 'touch') return;
+                    held = true; touched();
+                    var up = function() { window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true); release(); };
+                    window.addEventListener('pointerup', up, true);
+                    window.addEventListener('pointercancel', up, true);
+                }, { passive: true });
+                box.addEventListener('keydown', function(e) {
+                    touched();
+                    if (/^(ArrowUp|PageUp|Home)$/.test(e.key) || (e.key === ' ' && e.shiftKey)) unstick();
+                }, { passive: true });
+                box.addEventListener('scroll', function() {
+                    var top = box.scrollTop, h = box.scrollHeight, dTop = top - lastTop;
+                    // moved > 0 - содержимое уехало вверх (листают вниз), < 0 - листают вверх
+                    var moved = ref && ref.parentNode === box ? refY - ref.getBoundingClientRect().top : dTop - (h - lastH);
+                    mark();
+                    if (ours !== null) { var mine = Math.abs(top - ours) < 1; ours = null; if (mine) return; }
+                    // не наша прокрутка: сдвиг относительно содержимого - это человек (или его инерция)
+                    if (Math.abs(moved) >= 1) activeAt = Date.now();
+                    var g = h - top - box.clientHeight;
+                    if (dTop < -0.5 && moved < -0.5) { if (g > END) unstick(); }
+                    else if (g <= END) stuck = true;
+                }, { passive: true });
+                mark();
+                box.__hueUnstick = unstick;
+                box.__hueStuck = function() { return stuck; };
+                box.__hueBusy = busy;
+                box.__hueFollow = go;
+                // К последнему сообщению по воле человека (кнопка «↓», отправил сообщение): сразу или плавно, по кадрам.
+                // Издалека - сначала скачком на полтора экрана от низа, иначе плавная прокрутка тянулась бы через всю историю.
+                // Без плавности посреди жеста человека - когда он закончит (если за это время не поднялся выше)
+                box.__hueToBottom = function(smooth) {
+                    stuck = true; stop();
+                    if (!smooth || !raf || gap() < 1) { if (busy()) go(); else set(box.scrollHeight); return; }
+                    if (gap() > box.clientHeight * 1.5) set(box.scrollHeight - box.clientHeight * 2.5);
+                    var from = box.scrollTop, t0 = 0;
+                    var step = function(ts) {
+                        if (!t0) t0 = ts;
+                        var k = Math.min(1, (ts - t0) / 220), end = box.scrollHeight - box.clientHeight;
+                        set(from + (end - from) * (1 - Math.pow(1 - k, 3)));
+                        anim = k < 1 && stuck ? raf(step) : 0;
+                    };
+                    anim = raf(step);
+                };
+                box.addEventListener('load', go, true);
+                box.addEventListener('loadedmetadata', go, true);
+                if (window.MutationObserver) new MutationObserver(go).observe(box, { childList: true, subtree: true });
+                go();
+                if (raf) raf(go);
+                setTimeout(go, 150);
+                setTimeout(go, 600);
+                setTimeout(go, 1500);
+                window.addEventListener('load', go, { once: true });
+            };
+            // Общие для всех лент чата (диалог, беседа, мини-чат, секретный чат, чат битвы и рулетки): «лента у низа» - по
+            // намерению человека (hueChatBottom), без него - по расстоянию; «следовать вниз» - только прилипшей и не трогаемой;
+            // «вниз» - по воле человека, с повторным прилипанием
+            window.hueChatStuck = function(box, px) {
+                if (box.__hueStuck) return box.__hueStuck();
+                return box.scrollHeight - box.scrollTop - box.clientHeight < (px || 60);
+            };
+            window.hueChatFollow = function(box) {
+                if (box.__hueFollow) box.__hueFollow(); else box.scrollTop = box.scrollHeight;
+            };
+            window.hueChatToBottom = function(box, smooth) {
+                if (box.__hueToBottom) box.__hueToBottom(smooth); else box.scrollTop = box.scrollHeight;
+            };
+            // Перерисовка списка сообщений, пока человек читает выше (замена целиком после удаления, обрезка старых сверху):
+            // верхнее видимое сообщение остается там же. Ищется тот же узел или строка с тем же data-id; где браузер уже удержал
+            // прокрутку сам (overflow-anchor), разница выходит 0. Safari overflow-anchor не умеет - там без этого лента прыгала
+            window.hueKeepScroll = function(list, change) {
+                var top = list.getBoundingClientRect().top, anchor = null, key = null, before = 0, t0 = list.scrollTop;
+                for (var el = list.firstElementChild; el; el = el.nextElementSibling) {
+                    var r = el.getBoundingClientRect();
+                    if (r.bottom > top) { anchor = el; key = el.getAttribute('data-id'); before = r.top; break; }
+                }
+                change();
+                var now = anchor && anchor.parentNode === list ? anchor : null;
+                for (var it = list.firstElementChild; !now && key && it; it = it.nextElementSibling) {
+                    if (it.getAttribute('data-id') === key) now = it;
+                }
+                if (now) list.scrollTop += now.getBoundingClientRect().top - before;
+                else list.scrollTop = t0;
+            };
+        </script>
+        <script>window.HUE_UPLOAD_LIMITS = {"audio": 31457280, "gif": 15728640, "heic": true, "photo": 20971520, "video": 157286400, "voice": 12582912};</script>
+        <script>window.HUE_GUEST = false;</script>
+        <script src="/static/js/huevo-accept.js?v=3c527eac2f"></script>
+        <script src="/static/js/huevo-upload.js?v=1822bf044d"></script>
+        <script src="/static/js/huevo-chat.js?v=843b93d320"></script>
+        <script src="/static/js/huevo-secure.js?v=dc7a13a1d0"></script>
+        <script src="/static/js/huevo-search.js?v=453708dad3"></script>
+        <script src="/static/js/huevo-fee.js?v=a2f46e5363"></script>
+    <link rel="stylesheet" href="/static/css/huevo-minichat.css?v=393f9c2358"></head>
