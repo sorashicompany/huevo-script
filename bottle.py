@@ -12,7 +12,7 @@ class BottleApp:
  def __init__(self, root):
   self.root=root; root.title(APP_TITLE); root.geometry("500x300"); root.minsize(430,250)
   self.browser=self.context=self.page=self.playwright=self.chrome_process=None
-  self.running=False; self.after_id=None; self.clicks=0
+  self.running=False; self.after_id=None; self.clicks=0; self.last_play_attempt=0
   o=ttk.Frame(root,padding=16); o.pack(fill="both",expand=True)
   ttk.Label(o,text=APP_TITLE,font=("Segoe UI",17,"bold")).pack(anchor="w")
   ttk.Label(o,text="Автонажатия кнопок игры в бутылочку на huevo.su.").pack(anchor="w",pady=(4,14))
@@ -74,9 +74,17 @@ class BottleApp:
  def tick(self):
   if not self.running or not self.page: return
   try:
-   frame=self.page.frame_locator("iframe#apps-game-frame"); yes=frame.locator("#bt-yes"); spin=frame.locator("#bt-spin")
-   if yes.count() and yes.is_visible() and yes.is_enabled(): yes.click(timeout=1500); self.clicked("Поцеловать")
-   elif spin.count() and spin.is_visible() and spin.is_enabled(): spin.click(timeout=1500); self.clicked("Крутить бутылочку")
+   frame=self.page.frame_locator("iframe#apps-game-frame")
+   play=frame.locator("#bt-play"); yes=frame.locator("#bt-yes"); spin=frame.locator("#bt-spin")
+   if play.count() and play.is_visible():
+    # After being removed from a table, rejoin automatically. Retry if the game
+    # still shows the button after a brief transition delay.
+    if play.is_enabled() and time.monotonic()-self.last_play_attempt>=1.5:
+     play.click(timeout=1500); self.last_play_attempt=time.monotonic(); self.clicked("Играть")
+   else:
+    self.last_play_attempt=0
+    if yes.count() and yes.is_visible() and yes.is_enabled(): yes.click(timeout=1500); self.clicked("Поцеловать")
+    elif spin.count() and spin.is_visible() and spin.is_enabled(): spin.click(timeout=1500); self.clicked("Крутить бутылочку")
    self.after_id=self.root.after(250,self.tick)
   except Exception: self.after_id=self.root.after(500,self.tick)
  def clicked(self,label):
