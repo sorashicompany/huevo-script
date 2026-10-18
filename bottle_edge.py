@@ -47,9 +47,9 @@ class BottleApp:
   try: port_file.unlink(missing_ok=True)
   except OSError: pass
   try:
-   chrome=self.locate_edge()
-   if not chrome: raise FileNotFoundError("Microsoft Edge не найден. Установи Microsoft Edge.")
-   self.edge_process=subprocess.Popen([str(chrome),"--remote-debugging-port=0",f"--user-data-dir={BOTTLE_DIR}","--no-first-run","--no-default-browser-check",BOTTLE_URL],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=getattr(subprocess,"CREATE_NO_WINDOW",0))
+   edge=self.locate_edge()
+   if not edge: raise FileNotFoundError("Microsoft Edge не найден. Установи Microsoft Edge.")
+   self.edge_process=subprocess.Popen([str(edge),"--remote-debugging-port=0",f"--user-data-dir={BOTTLE_DIR}","--no-first-run","--no-default-browser-check",BOTTLE_URL],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=getattr(subprocess,"CREATE_NO_WINDOW",0))
    deadline=time.monotonic()+20
    while time.monotonic()<deadline and not port_file.exists():
     if self.edge_process.poll() is not None: raise RuntimeError("Edge завершился до запуска.")
@@ -57,7 +57,7 @@ class BottleApp:
    if not port_file.exists(): raise TimeoutError("Edge не открыл интерфейс управления за 20 секунд.")
    port=port_file.read_text(encoding="utf-8").splitlines()[0].strip()
    self.playwright=sync_playwright().start(); self.browser=self.playwright.chromium.connect_over_cdp("http://127.0.0.1:"+port)
-   if not self.browser.contexts: raise RuntimeError("Вкладки Chrome недоступны.")
+   if not self.browser.contexts: raise RuntimeError("Вкладки Edge недоступны.")
    self.context=self.browser.contexts[0]; self.page=self.context.pages[0] if self.context.pages else self.context.new_page()
    if self.page.url=="about:blank": self.page.goto(BOTTLE_URL,wait_until="domcontentloaded",timeout=60000)
    self.auto_btn.configure(state="normal"); self.status.set("Бутылочка открыта — автонажатия выключены"); self.log("Браузер бутылочки открыт")
