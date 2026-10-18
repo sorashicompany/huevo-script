@@ -30,9 +30,9 @@ def main() -> None:
         # Download Playwright's Chromium on first boot if the host image lacks it.
         browser_executable = Path(p.chromium.executable_path)
         if not browser_executable.exists():
-            log("Chromium is missing; downloading Playwright Chromium (first start may take a while).")
+            log("Chromium headless shell is missing; downloading the smaller headless browser (first start may take a while).")
             subprocess.run(
-                [sys.executable, "-m", "playwright", "install", "chromium"],
+                [sys.executable, "-m", "playwright", "install", "chromium", "--only-shell"],
                 check=True,
                 timeout=600,
             )
