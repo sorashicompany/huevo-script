@@ -20,13 +20,8 @@ class BottleApp:
   ttk.Button(row,text="Открыть бутылочку",command=self.open_browser).pack(side="left")
   self.auto_btn=ttk.Button(row,text="Автонажатия: Старт",command=self.toggle_auto,state="disabled"); self.auto_btn.pack(side="left",padx=8)
   self.auto_switch_tables=tk.BooleanVar(value=False)
-  self.switch_tables_cb=ttk.Checkbutton(o,text="Менять стол, если кроме меня никого нет",variable=self.auto_switch_tables)
-  self.switch_tables_cb.pack(anchor="w",pady=(0,4))
-  uid_row=ttk.Frame(o); uid_row.pack(fill="x",pady=(0,8))
-  ttk.Label(uid_row,text="Мой UID места:").pack(side="left")
-  self.own_uid=tk.StringVar(value="")
-  ttk.Entry(uid_row,textvariable=self.own_uid,width=12).pack(side="left",padx=(6,0))
-  ttk.Label(uid_row,text="(data-seat-uid; нужен, чтобы не считать себя другим игроком)").pack(side="left",padx=(6,0))
+  self.switch_tables_cb=ttk.Checkbutton(o,text="Менять стол, если за столом только я",variable=self.auto_switch_tables)
+  self.switch_tables_cb.pack(anchor="w",pady=(0,8))
   self.status=tk.StringVar(value="Браузер игры не открыт")
   ttk.Label(o,textvariable=self.status,font=("Segoe UI",10,"bold")).pack(anchor="w",pady=(0,10))
   stats=ttk.LabelFrame(o,text="Статистика",padding=10); stats.pack(fill="x")
@@ -83,19 +78,16 @@ class BottleApp:
   if not self.running or not self.page: return
   try:
    frame=self.page.frame_locator("iframe#apps-game-frame")
-   # Switch if the table is empty, or if the only occupied seat belongs to us.
+   # If there is only one occupied seat (ours) or no occupied seats, switch tables.
    if self.auto_switch_tables.get() and time.monotonic()-self.last_switch_attempt>=2.5:
     empty=frame.locator(".btg-card.is-empty[data-sit-seat]")
     occupied=frame.locator(".btg-card[data-seat][data-seat-uid]")
     seats=frame.locator(".btg-card.is-empty[data-sit-seat], .btg-card[data-seat][data-seat-uid]")
     empty_count=empty.count(); occupied_count=occupied.count(); seat_count=seats.count()
-    own_uid=self.own_uid.get().strip()
-    only_me=bool(own_uid) and occupied_count==1 and occupied.first.get_attribute("data-seat-uid")==own_uid and empty_count==7
-    nobody_here=empty_count==8 and occupied_count==0
-    if seat_count==8 and (only_me or nobody_here):
+    if seat_count==8 and occupied_count<=1 and empty_count==8-occupied_count:
      switch=frame.locator("#bt-switch")
      if switch.count() and switch.is_visible() and switch.is_enabled():
-      switch.click(timeout=1500); self.last_switch_attempt=time.monotonic(); self.clicked("Сменить стол — кроме меня никого нет" if only_me else "Сменить стол — стол пустой")
+      switch.click(timeout=1500); self.last_switch_attempt=time.monotonic(); self.clicked("Сменить стол — игроков за столом: "+str(occupied_count))
       self.after_id=self.root.after(1200,self.tick)
       return
    play=frame.locator("#bt-play"); yes=frame.locator("#bt-yes"); spin=frame.locator("#bt-spin")
