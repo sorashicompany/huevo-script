@@ -7,7 +7,9 @@ The first run may require interactive login; this script does not bypass CAPTCHA
 from __future__ import annotations
 
 import os
+import sys
 import time
+import subprocess
 from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
@@ -25,7 +27,15 @@ def log(message: str) -> None:
 def main() -> None:
     PROFILE_DIR.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
-        # The hosting image must provide a compatible Chromium installation.
+        # Download Playwright's Chromium on first boot if the host image lacks it.
+        browser_executable = Path(p.chromium.executable_path)
+        if not browser_executable.exists():
+            log("Chromium is missing; downloading Playwright Chromium (first start may take a while).")
+            subprocess.run(
+                [sys.executable, "-m", "playwright", "install", "chromium"],
+                check=True,
+                timeout=600,
+            )
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
             headless=HEADLESS,
