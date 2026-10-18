@@ -5,7 +5,7 @@ from tkinter import messagebox, ttk
 from playwright.sync_api import sync_playwright
 
 APP_TITLE = "хуевая бутылочка"
-BOTTLE_URL = "https://huevo.su/apps/"
+BOTTLE_URL = "https://huevo.su/apps/3"
 BOTTLE_DIR = Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "HuevoHelper" / "bottle-profile"
 
 class BottleApp:
