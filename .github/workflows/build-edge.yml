@@ -1,0 +1,36 @@
+name: Build HuevoBottle Edge (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "bottle_edge.py"
+      - "requirements-edge.txt"
+      - ".github/workflows/build-edge.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-edge.txt pyinstaller
+      - name: Build Windows executable
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name HuevoBottle-Edge bottle_edge.py
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: HuevoBottle-Edge-Windows
+          path: dist/HuevoBottle-Edge.exe
+          if-no-files-found: error
